@@ -14,7 +14,6 @@ import {
   Package,
   Users,
   BarChart,
-  EllipsisVertical,
   CreditCard,
   Store,
   Megaphone,

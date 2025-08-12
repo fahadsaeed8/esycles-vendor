@@ -1,14 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Bell,
-  Calendar,
-  ChevronDown,
-  Link,
-  LogOut,
-  Settings,
-} from "lucide-react";
+import { ChevronDown, LogOut, Settings } from "lucide-react";
 import Image from "next/image";
 import ReactPopUp from "../common/react-popup";
 

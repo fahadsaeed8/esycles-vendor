@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Bell, Calendar, Link, Settings } from "lucide-react";
-import Image from "next/image";
 import ReactPopUp from "../common/react-popup";
 
 const NotificationPopUp = () => {
