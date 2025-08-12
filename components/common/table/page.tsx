@@ -2,25 +2,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Plus, Minus } from "lucide-react";
 
-interface Column {
-  key: string;
+// Generic column type
+interface Column<T> {
+  key: keyof T;
   label: string;
   className?: string;
 }
 
-interface CommonTableProps {
-  columns: Column[];
-  data: Record<string, any>[];
-  highlightKey?: string;
-  accordion?: (row: Record<string, any>) => React.ReactNode;
+interface CommonTableProps<T extends Record<string, unknown>> {
+  columns: Column<T>[];
+  data: T[];
+  highlightKey?: keyof T;
+  accordion?: (row: T) => React.ReactNode;
 }
 
-const Table: React.FC<CommonTableProps> = ({
+const Table = <T extends Record<string, unknown>>({
   columns,
   data,
   highlightKey,
   accordion,
-}) => {
+}: CommonTableProps<T>) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -29,7 +30,6 @@ const Table: React.FC<CommonTableProps> = ({
   };
 
   useEffect(() => {
-    // Optional: reset scroll height when opening/closing
     contentRefs.current.forEach((ref, i) => {
       if (ref) {
         ref.style.maxHeight = openIndex === i ? `${ref.scrollHeight}px` : "0px";
@@ -48,7 +48,7 @@ const Table: React.FC<CommonTableProps> = ({
                   {accordion && <th className="w-10"></th>}
                   {columns.map((col) => (
                     <th
-                      key={col.key}
+                      key={String(col.key)}
                       scope="col"
                       className={`px-4 py-3 sm:px-6 sm:py-3 text-left whitespace-nowrap text-xs md:text-sm font-medium uppercase tracking-wider ${
                         col.className || ""
@@ -79,7 +79,7 @@ const Table: React.FC<CommonTableProps> = ({
                       )}
                       {columns.map((col) => (
                         <td
-                          key={col.key}
+                          key={String(col.key)}
                           className={`px-4 py-4 sm:px-6 whitespace-nowrap text-sm align-middle ${
                             col.key === highlightKey
                               ? "text-green-600 font-semibold"
@@ -108,7 +108,7 @@ const Table: React.FC<CommonTableProps> = ({
                               </button>
                             </div>
                           ) : (
-                            row[col.key]
+                            String(row[col.key])
                           )}
                         </td>
                       ))}
