@@ -12,22 +12,29 @@ type ReactPopUpProps = {
 const ReactPopUp = ({ children, popupContent }: ReactPopUpProps) => {
   const [openPopUp, setOpenPopUp] = useState(false);
 
-  const closePopUp = () => setOpenPopUp(false);
-
   return (
-    <div className="relative">
+    <div
+      className="relative inline-block"
+      onMouseEnter={() => setOpenPopUp(true)}
+      onMouseLeave={() => setOpenPopUp(false)}
+    >
       <Popup
         trigger={<div>{children}</div>}
         position="bottom right"
-        closeOnDocumentClick
-        nested
         open={openPopUp}
-        onOpen={() => setOpenPopUp(true)}
-        onClose={closePopUp}
+        onClose={() => setOpenPopUp(false)}
+        closeOnDocumentClick={false}
+        nested
         arrow={false}
-        contentStyle={{ padding: 0, border: "none", background: "transparent" }}
+        modal={false}
+        overlayStyle={{ background: "transparent", pointerEvents: "none" }}
+        contentStyle={{
+          padding: 0,
+          border: "none",
+          background: "transparent",
+        }}
       >
-        {popupContent(closePopUp)}
+        {popupContent(() => setOpenPopUp(false))}
       </Popup>
     </div>
   );
