@@ -1,24 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import {
-  MapPin,
-  Search,
-  Bell,
-  Mail,
-  MessageSquareText,
-  Save,
-  Printer,
-  Menu,
-  X,
-} from "lucide-react";
-import MailPopUp from "../../popup/message-popup";
+import { Search, X } from "lucide-react";
 import NotificationPopUp from "../../popup/notification-popup";
 import ProfilePopUp from "../../popup/profile-popup";
 
 export default function Navbar() {
   const [search, setSearch] = useState("");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
 
   return (
@@ -51,26 +39,17 @@ export default function Navbar() {
       )}
 
       <div className="w-full bg-[#283a52] shadow-md px-4 py-2 flex items-center justify-between text-white relative">
-        {/* Left Section - Mobile Menu and Locations */}
+        {/* Left Section - Mobile Search Button */}
         <div className="flex items-center gap-2">
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden mr-1"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          <h3 className="text-base lg:text-lg font-medium text-white">
+            Dashboard
+          </h3>
+          <button onClick={() => setShowSearch(true)} className="lg:hidden p-1">
+            <Search size={20} />
           </button>
-
-          {/* Locations - Always visible */}
-          <div className="flex items-center gap-1 cursor-pointer">
-            <MapPin size={18} className="text-white" />
-            <span className="font-semibold text-sm hidden sm:inline">
-              Locations
-            </span>
-          </div>
         </div>
 
-        {/* Center Section - Search (desktop) */}
+        {/* Center Section - Search (Desktop) */}
         <div className="hidden lg:flex flex-1 max-w-xl mx-6">
           <div className="flex border border-[#febd69] overflow-hidden bg-white w-full">
             <input
@@ -86,61 +65,11 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Right Section - Icons and Profile */}
-        <div className="flex items-center gap-2 sm:gap-4">
-          {/* Search Button - Mobile */}
-          <button onClick={() => setShowSearch(true)} className="lg:hidden p-1">
-            <Search size={20} />
-          </button>
-          {/* Icons - Always visible but spaced differently */}
-          <div className="hidden sm:flex items-center gap-2 sm:gap-4">
-            <MessageSquareText className="w-5 h-5 cursor-pointer" />
-            <MailPopUp />
-            <Save className="w-5 h-5 cursor-pointer" />
-            <Printer className="w-5 h-5 cursor-pointer" />
-            <NotificationPopUp />
-          </div>
-          {/* Compact Icons - Mobile */}
-          {/* <div className="flex sm:hidden items-center gap-1">
-            <div className="relative cursor-pointer p-1">
-              <Bell size={18} />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-            </div>
-          </div> */}
-          <div className="block sm:hidden">
-            <NotificationPopUp />
-          </div>
-          <ProfilePopUp />{" "}
+        {/* Right Section - Notification + Profile */}
+        <div className="flex items-center gap-4">
+          <NotificationPopUp />
+          <ProfilePopUp />
         </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="fixed top-12 left-0 w-full bg-[#283a52] shadow-lg z-50 lg:hidden py-2 px-4">
-            <div className="grid grid-cols-3 gap-4">
-              <div className="flex flex-col items-center p-2 cursor-pointer">
-                <MessageSquareText size={20} />
-                <span className="text-xs mt-1">Messages</span>
-              </div>
-              <div className="flex flex-col items-center p-2 cursor-pointer">
-                <Mail size={20} />
-                <span className="text-xs mt-1">Mail</span>
-              </div>
-              <div className="flex flex-col items-center p-2 cursor-pointer">
-                <Save size={20} />
-                <span className="text-xs mt-1">Saved</span>
-              </div>
-              <div className="flex flex-col items-center p-2 cursor-pointer">
-                <Printer size={20} />
-                <span className="text-xs mt-1">Print</span>
-              </div>
-              <div className="flex flex-col items-center p-2 cursor-pointer relative">
-                <Bell size={20} />
-                <span className="text-xs mt-1">Alerts</span>
-                <span className="absolute top-1 right-4 w-2 h-2 bg-red-500 rounded-full"></span>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </>
   );
