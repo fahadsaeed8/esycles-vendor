@@ -23,7 +23,7 @@ export default function OverviewChart() {
   const selectedData = data.find(d => d.month === selectedMonth);
 
   return (
-    <div className="bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white rounded-3xl p-6 shadow-lg w-[600px]">
+    <div className="bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white rounded-3xl p-6 shadow-lg w-full max-w-[600px]">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Overview</h2>
         <select className="bg-orange-300 rounded-lg px-3 py-1 text-sm">
@@ -35,7 +35,7 @@ export default function OverviewChart() {
       {/* Chart */}
       <ResponsiveContainer width="100%" height={150}>
         <LineChart data={data}>
-          <XAxis dataKey="month" axisLine={false} tickLine={false} />
+          <XAxis dataKey="month" axisLine={false} tickLine={false}  padding={{ left: 20, right: 20 }}/>
           <Tooltip
             contentStyle={{
               backgroundColor: '#059669',

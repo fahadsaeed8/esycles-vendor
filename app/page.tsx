@@ -7,7 +7,6 @@ import { FiSearch } from "react-icons/fi";
 import { BellIcon, MoreVertical } from "lucide-react";
 import { FaBoxOpen, FaClipboardCheck } from "react-icons/fa";
 import { MdOutlineViewModule } from "react-icons/md";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import Table from "../components/common/table/page";
 import Image from "next/image";
 
@@ -36,47 +35,50 @@ const page = () => {
     },
   ];
 
-  const products = [
+type Product = {
+  product: string;
+  category: string;
+  amount: number;
+  date: string;
+  customer: string;
+  status: string;
+};
+
+  const products: Product[] = [
     {
       product: "Body Parts",
       category: "Body Parts",
       amount: 900,
-      currency: "TK",
       date: "15/03/2022",
       customer: "Nur Alom",
       status: "Processing",
-      image: "/images/body-parts.png",
     },
     {
       product: "Auxillary Battery",
       category: "Body Parts",
       amount: 16600,
-      currency: "TK",
       date: "21/03/2022",
       customer: "S A Sams",
       status: "Shipped",
-      image: "/images/auxillary-battery.png",
     },
     {
       product: "Car Interior",
       category: "Body Parts",
       amount: 800,
-      currency: "TK",
       date: "05/03/2022",
       customer: "Sadek Rahman",
       status: "Done",
-      image: "/images/car-interior.png",
     },
   ];
 
-  const columns = [
-    { key: "product", label: "Product" },
-    { key: "category", label: "Category" },
-    { key: "amount", label: "Amount" },
-    { key: "date", label: "Date" },
-    { key: "customer", label: "Customer" },
-    { key: "status", label: "Status" },
-  ];
+  const columns: { key: keyof Product; label: string }[] = [
+  { key: "product", label: "Product" },
+  { key: "category", label: "Category" },
+  { key: "amount", label: "Amount" },
+  { key: "date", label: "Date" },
+  { key: "customer", label: "Customer" },
+  { key: "status", label: "Status" },
+];
 
   const categories = [
     {
@@ -111,14 +113,14 @@ const page = () => {
 
   return (
     <DashboardLayout>
-      <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-2">
+      <div className="w-full flex flex-col md:flex-row sm:items-center sm:justify-between md:px-4 py-2">
         {/* Left Heading */}
         <h2 className="text-lg sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-0">
           Overview
         </h2>
 
         {/* Search Bar */}
-        <div className="flex items-center gap-x-3">
+        <div className="flex items-center gap-x-1 md:gap-x-3">
           <div className="flex items-center border border-[#f59e0b] rounded-full px-3 py-3 w-full sm:w-[300px] md:w-[350px] lg:w-[400px]">
             <FiSearch className="text-[#f59e0b] mr-2 text-lg" />
             <input
@@ -135,11 +137,11 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div className=" flex gap-x-5 bg-gray-100 my-5">
-        <div>
+      <div className=" flex flex-col md:flex-row w-full gap-5 bg-gray-100 my-5">
+        <div className=" w-full">
           <OverviewChart />
         </div>
-        <div className="bg-white shadow-md rounded-2xl p-4 w-full max-w-xs sm:max-w-sm md:max-w-md text-center border border-gray-100 flex flex-col items-center justify-center">
+        <div className="bg-white shadow-md rounded-2xl p-4 w-full  md:max-w-md text-center border border-gray-100 flex flex-col items-center justify-center">
           {/* Title */}
           <h2 className="text-lg sm:text-2xl font-semibold text-gray-800">
             Current Balance
@@ -164,64 +166,64 @@ const page = () => {
           </button>
         </div>
       </div>
-      <div className="flex gap-5 my-5">
-        <div>
-          <div className="w-full flex flex-wrap gap-4">
-            {stats.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-4 bg-white rounded-4xl shadow-md px-5 py-8 w-full sm:w-[300px] md:w-[260px] lg:w-[240px]"
-                style={{
-                  background: "rgba(255,255,255,0.9)",
-                  backdropFilter: "blur(10px)",
-                }}
-              >
-                <div>{item.icon}</div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    {item.value}
-                  </h2>
-                  <p className="text-gray-500 text-sm">{item.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className=" max-w-[750px] my-5">
-            <Table columns={columns} data={products} highlightKey="" />
+      <div className="flex flex-col xl:flex-row gap-5 my-5">
+  <div className="flex-1">
+    {/* Stats */}
+    <div className="w-full flex flex-wrap gap-4">
+      {stats.map((item, idx) => (
+        <div
+          key={idx}
+          className="flex items-center gap-4 bg-white rounded-4xl shadow-md px-5 py-8 w-full sm:w-[300px] md:w-[260px] lg:w-[240px]"
+          style={{
+            background: "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <div>{item.icon}</div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">{item.value}</h2>
+            <p className="text-gray-500 text-sm">{item.label}</p>
           </div>
         </div>
-        <div>
-          <div className="bg-white rounded-3xl shadow p-4 w-full sm:w-[300px]">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
-              Top Categories
-            </h2>
-            <div className="flex flex-col gap-5">
-              {categories.map((cat, idx) => (
-                <div
-                  key={idx}
-                  className={`flex items-center justify-between rounded-xl p-3 ${cat.bg}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src={cat.icon}
-                      alt={cat.name}
-                      width={30}
-                      height={30}
-                      className="object-contain"
-                    />
-                    <span className={`font-medium ${cat.text}`}>
-                      {cat.name}
-                    </span>
-                  </div>
-                  <span className={`font-semibold ${cat.text}`}>
-                    {cat.count}
-                  </span>
-                </div>
-              ))}
+      ))}
+    </div>
+
+    {/* Table */}
+    <div className="max-w-full lg:max-w-[750px] my-5 overflow-x-auto">
+      <Table columns={columns} data={products} highlightKey="status" />
+    </div>
+  </div>
+
+  {/* Top Categories */}
+  <div className="w-full lg:w-auto">
+    <div className="bg-white rounded-3xl shadow p-4 w-full sm:w-[300px]">
+      <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+        Top Categories
+      </h2>
+      <div className="flex flex-col gap-5">
+        {categories.map((cat, idx) => (
+          <div
+            key={idx}
+            className={`flex items-center justify-between rounded-xl p-3 ${cat.bg}`}
+          >
+            <div className="flex items-center gap-3">
+              <Image
+                src={cat.icon}
+                alt={cat.name}
+                width={30}
+                height={30}
+                className="object-contain"
+              />
+              <span className={`font-medium ${cat.text}`}>{cat.name}</span>
             </div>
+            <span className={`font-semibold ${cat.text}`}>{cat.count}</span>
           </div>
-        </div>
+        ))}
       </div>
+    </div>
+  </div>
+</div>
+
     </DashboardLayout>
   );
 };
