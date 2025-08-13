@@ -3,8 +3,6 @@
 import React from "react";
 import DashboardLayout from "../components/layout/dashboard-layout";
 import OverviewChart from "../components/sections/OverViewChart";
-import { FiSearch } from "react-icons/fi";
-import { BellIcon, MoreVertical } from "lucide-react";
 import { FaBoxOpen, FaClipboardCheck } from "react-icons/fa";
 import { MdOutlineViewModule } from "react-icons/md";
 import Table from "../components/common/table/page";
@@ -82,28 +80,28 @@ type Product = {
 
   const categories = [
     {
-      name: "Oil Filter",
+      name: "Bicycles",
       count: 1308,
       bg: "bg-blue-100",
       text: "text-sky-500",
       icon: "/icons/cycle.png",
     },
     {
-      name: "Car Care",
+      name: "E-bikes",
       count: 1019,
       bg: "bg-red-100",
       text: "text-yellow-500",
       icon: "/icons/cycle.png",
     },
     {
-      name: "AC Filter",
+      name: "E-scooters",
       count: 807,
       bg: "bg-green-100",
       text: "text-green-500",
       icon: "/icons/cycle.png",
     },
     {
-      name: "Car Care",
+      name: "E-stakeboards",
       count: 633,
       bg: "bg-pink-100",
       text: "text-pink-500",
@@ -113,13 +111,13 @@ type Product = {
 
   return (
     <DashboardLayout>
-      <div className="w-full flex flex-col md:flex-row sm:items-center sm:justify-between md:px-4 py-2">
-        {/* Left Heading */}
+      {/* <div className="w-full flex flex-col md:flex-row sm:items-center sm:justify-between md:px-4 py-2">
+       
         <h2 className="text-lg sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-0">
           Overview
         </h2>
 
-        {/* Search Bar */}
+      
         <div className="flex items-center gap-x-1 md:gap-x-3">
           <div className="flex items-center border border-[#f59e0b] rounded-full px-3 py-3 w-full sm:w-[300px] md:w-[350px] lg:w-[400px]">
             <FiSearch className="text-[#f59e0b] mr-2 text-lg" />
@@ -136,12 +134,12 @@ type Product = {
             <MoreVertical className="text-[#f59e0b] cursor-pointer" />
           </div>
         </div>
-      </div>
-      <div className=" flex flex-col md:flex-row w-full gap-5 bg-gray-100 my-5">
+      </div> */}
+      <div className=" flex flex-col md:flex-row w-full gap-5 bg-gray-100">
         <div className=" w-full">
           <OverviewChart />
         </div>
-        <div className="bg-white shadow-md rounded-2xl p-4 w-full  md:max-w-md text-center border border-gray-100 flex flex-col items-center justify-center">
+        <div className="bg-white shadow-2xl rounded-2xl p-4 w-full  md:max-w-md text-center border border-gray-100 flex flex-col items-center justify-center">
           {/* Title */}
           <h2 className="text-lg sm:text-2xl font-semibold text-gray-800">
             Current Balance
@@ -173,7 +171,7 @@ type Product = {
       {stats.map((item, idx) => (
         <div
           key={idx}
-          className="flex items-center gap-4 bg-white rounded-4xl shadow-md px-5 py-8 w-full sm:w-[300px] md:w-[260px] lg:w-[240px]"
+          className="flex items-center gap-4 bg-white rounded-4xl shadow-2xl px-5 py-8 w-full sm:w-[300px] md:w-[260px] lg:w-[240px]"
           style={{
             background: "rgba(255,255,255,0.9)",
             backdropFilter: "blur(10px)",
@@ -189,14 +187,14 @@ type Product = {
     </div>
 
     {/* Table */}
-    <div className="max-w-full lg:max-w-[750px] my-5 overflow-x-auto">
+    <div className="max-w-full lg:max-w-[750px] my-5 overflow-x-auto shadow-2xl">
       <Table columns={columns} data={products} highlightKey="status" />
     </div>
   </div>
 
   {/* Top Categories */}
   <div className="w-full lg:w-auto">
-    <div className="bg-white rounded-3xl shadow p-4 w-full sm:w-[300px]">
+    <div className="bg-white rounded-3xl shadow-2xl p-4 w-full sm:w-[300px]">
       <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
         Top Categories
       </h2>

@@ -182,8 +182,8 @@ function Orders() {
 
   return (
     <DashboardLayout>
-      <div className="px-2">
-        <div className="flex items-center justify-between my-6">
+      <div className="">
+        <div className="flex items-center justify-between mb-6">
           <h1 className="text-[24px] font-[500] text-[#1f1c2e] ">Orders</h1>
           {/* <button className="w-[132px] h-[45px] flex items-center justify-center text-[14px] bg-[#f59359] rounded-md hover:bg-transparent">
           

@@ -10,17 +10,17 @@ interface Vendor {
 }
 
 const vendors: Vendor[] = [
-  { id: 1, name: "Ali Traders", avatar: "/avatars/vendor1.jpg", score: 980 },
+  { id: 1, name: "Ali Traders", avatar: "/icons/cyclewhite.png", score: 980 },
   {
     id: 2,
     name: "Raza Electronics",
-    avatar: "/avatars/vendor2.jpg",
+    avatar: "/icons/cyclelogo2.png",
     score: 870,
   },
-  { id: 3, name: "Tech Hub", avatar: "/avatars/vendor3.jpg", score: 820 },
-  { id: 4, name: "City Mart", avatar: "/avatars/vendor4.jpg", score: 780 },
-  { id: 5, name: "Smart Deals", avatar: "/avatars/vendor5.jpg", score: 750 },
-  { id: 6, name: "MegaMart", avatar: "/avatars/vendor6.jpg", score: 720 },
+  { id: 3, name: "Tech Hub", avatar: "/icons/cyclelogo2.png", score: 820 },
+  { id: 4, name: "City Mart", avatar: "/icons/cycle.png", score: 780 },
+  { id: 5, name: "Smart Deals", avatar: "/icons/cycle.png", score: 750 },
+  { id: 6, name: "MegaMart", avatar: "/icons/cycle.png", score: 720 },
 ];
 
 export default function Leaderboard() {
@@ -49,7 +49,7 @@ export default function Leaderboard() {
                   alt={vendor.name}
                   width={80}
                   height={80}
-                  className="rounded-full border-4 border-white shadow-md"
+                  className="rounded-full border-2 border-white shadow-md"
                 />
                 {index === 0 && (
                   <span className="absolute -top-3 -right-3 text-3xl">👑</span>
@@ -93,7 +93,7 @@ export default function Leaderboard() {
                       alt={vendor.name}
                       width={40}
                       height={40}
-                      className="rounded-full border border-orange-300"
+                      className=""
                     />
                     <span className="font-medium">{vendor.name}</span>
                   </td>
