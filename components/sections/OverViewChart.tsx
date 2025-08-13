@@ -23,7 +23,7 @@ export default function OverviewChart() {
   const selectedData = data.find(d => d.month === selectedMonth);
 
   return (
-    <div className="bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white rounded-3xl p-6 shadow-lg w-full max-w-[600px]">
+    <div className="bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] drop-shadow-2xl drop-shadow-amber-200 text-white rounded-3xl p-6 shadow-lg w-full max-w-[600px]">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Overview</h2>
         <select className="bg-orange-300 rounded-lg px-3 py-1 text-sm">
