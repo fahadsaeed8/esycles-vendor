@@ -33,14 +33,14 @@ const page = () => {
     },
   ];
 
-type Product = {
-  product: string;
-  category: string;
-  amount: number;
-  date: string;
-  customer: string;
-  status: string;
-};
+  type Product = {
+    product: string;
+    category: string;
+    amount: number;
+    date: string;
+    customer: string;
+    status: string;
+  };
 
   const products: Product[] = [
     {
@@ -70,13 +70,13 @@ type Product = {
   ];
 
   const columns: { key: keyof Product; label: string }[] = [
-  { key: "product", label: "Product" },
-  { key: "category", label: "Category" },
-  { key: "amount", label: "Amount" },
-  { key: "date", label: "Date" },
-  { key: "customer", label: "Customer" },
-  { key: "status", label: "Status" },
-];
+    { key: "product", label: "Product" },
+    { key: "category", label: "Category" },
+    { key: "amount", label: "Amount" },
+    { key: "date", label: "Date" },
+    { key: "customer", label: "Customer" },
+    { key: "status", label: "Status" },
+  ];
 
   const categories = [
     {
@@ -165,63 +165,68 @@ type Product = {
         </div>
       </div>
       <div className="flex flex-col xl:flex-row gap-5 my-5">
-  <div className="flex-1">
-    {/* Stats */}
-    <div className="w-full flex flex-wrap gap-4">
-      {stats.map((item, idx) => (
-        <div
-          key={idx}
-          className="flex items-center gap-4 bg-white rounded-4xl shadow-2xl px-5 py-8 w-full sm:w-[300px] md:w-[260px] lg:w-[240px]"
-          style={{
-            background: "rgba(255,255,255,0.9)",
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          <div>{item.icon}</div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800">{item.value}</h2>
-            <p className="text-gray-500 text-sm">{item.label}</p>
+        <div className="w-full">
+          {/* Stats */}
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {stats.map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-4 bg-white rounded-4xl shadow-2xl px-5 py-8 w-full"
+                style={{
+                  background: "rgba(255,255,255,0.9)",
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                <div>{item.icon}</div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    {item.value}
+                  </h2>
+                  <p className="text-gray-500 text-sm">{item.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Table */}
+          <div className="max-w-full my-5 overflow-x-auto shadow-2xl">
+            <Table columns={columns} data={products} highlightKey="status" />
           </div>
         </div>
-      ))}
-    </div>
 
-    {/* Table */}
-    <div className="max-w-full lg:max-w-[750px] my-5 overflow-x-auto shadow-2xl">
-      <Table columns={columns} data={products} highlightKey="status" />
-    </div>
-  </div>
-
-  {/* Top Categories */}
-  <div className="w-full lg:w-auto">
-    <div className="bg-white rounded-3xl shadow-2xl p-4 w-full sm:w-[300px]">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
-        Top Categories
-      </h2>
-      <div className="flex flex-col gap-5">
-        {categories.map((cat, idx) => (
-          <div
-            key={idx}
-            className={`flex items-center justify-between rounded-xl p-3 ${cat.bg}`}
-          >
-            <div className="flex items-center gap-3">
-              <Image
-                src={cat.icon}
-                alt={cat.name}
-                width={30}
-                height={30}
-                className="object-contain"
-              />
-              <span className={`font-medium ${cat.text}`}>{cat.name}</span>
+        {/* Top Categories */}
+        <div className="w-full">
+          <div className="bg-white rounded-3xl shadow-2xl p-4 w-full">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+              Top Categories
+            </h2>
+            <div className="flex flex-col gap-5">
+              {categories.map((cat, idx) => (
+                <div
+                  key={idx}
+                  className={`flex items-center justify-between rounded-xl p-3 ${cat.bg}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={cat.icon}
+                      alt={cat.name}
+                      width={30}
+                      height={30}
+                      className="object-contain"
+                    />
+                    <span className={`font-medium ${cat.text}`}>
+                      {cat.name}
+                    </span>
+                  </div>
+                  <span className={`font-semibold ${cat.text}`}>
+                    {cat.count}
+                  </span>
+                </div>
+              ))}
             </div>
-            <span className={`font-semibold ${cat.text}`}>{cat.count}</span>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
     </DashboardLayout>
   );
 };

@@ -6,6 +6,11 @@ body {
 }
 
 
+.wrapper {
+  max-width: 1920px;
+  margin:auto
+}
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
