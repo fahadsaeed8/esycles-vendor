@@ -67,7 +67,7 @@ export default function VendorSettings() {
                   onClick={() => fileInputRef.current?.click()}
                   className="absolute bottom-1 right-1 bg-orange-500 p-2 rounded-full text-white shadow hover:bg-orange-600 transition"
                 >
-                  <Camera size={16} />
+                  <Camera size={16} className=" cursor-pointer"/>
                 </button>
                 {/* Hidden File Input */}
                 <input
