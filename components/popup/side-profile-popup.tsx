@@ -3,32 +3,42 @@
 import React from "react";
 import { EllipsisVertical, List, Lock, Settings } from "lucide-react";
 import ReactPopUp from "../common/react-popup";
+import { useRouter } from "next/navigation";
+import { useUser } from "../profileContext/profile-content";
 
 const SideProfilePopUp = () => {
+  const router = useRouter();
+
   const notifications = [
     {
       id: 1,
       message: "Account Settings",
       avatar: <Settings size={16} className="text-white" />,
+      link: "settings",
     },
     {
       id: 2,
       message: "Change Password",
       avatar: <Lock size={16} className="text-white" />,
+      link: "/settings",
     },
     {
       id: 3,
       message: "TO Do List",
       avatar: <List size={16} className="text-white" />,
+      link: "/todo-list",
     },
   ];
-
+ const {profileImage} = useUser()
   const popupContent = (close: () => void) => (
     <div className="w-[240px] rounded-[4px] shadow-lg bg-white border border-gray-200 mt-4 overflow-hidden">
       <div>
         {notifications.map((msg) => (
           <div
-            onClick={close}
+            onClick={() => {
+              router.push(msg.link);
+              close();
+            }}
             key={msg.id}
             className={`flex items-center gap-3 px-4 py-2 transition-colors duration-150 cursor-pointer border-b border-b-gray-300 hover:bg-gray-300`}
           >

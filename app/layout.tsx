@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { UserProvider } from "../components/profileContext/profile-content";
 
 export const metadata: Metadata = {
   title: "Esycles Vendor",
@@ -17,9 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>
-        <div className="wrapper">{children}</div>
-      </body>
+      <UserProvider>
+      <body className={`antialiased`}>{children}</body>
+      </UserProvider>
     </html>
   );
 }

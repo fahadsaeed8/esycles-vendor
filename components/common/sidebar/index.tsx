@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import SideProfilePopUp from "../../popup/side-profile-popup";
+import { useUser } from "../../profileContext/profile-content";
 
 interface MenuItem {
   label: string;
@@ -190,6 +191,7 @@ export default function Sidebar() {
     }
   }, [pathname]);
 
+  const {profileImage} = useUser()
   return (
     <>
       {/* Mobile Menu Button */}
@@ -227,29 +229,33 @@ export default function Sidebar() {
         </div>
 
         {/* Logo */}
+        <Link href={'/'}>
         <Image
-          src="/icons/white-logo-latest.png"
+          src={"/icons/white-logo-latest.png"}
           width={120}
           height={60}
           alt="Logo"
           className="w-fit h-fit cursor-pointer mb-2 !mx-auto"
         />
+        </Link>
 
         {/* User Profile */}
         <div className="w-full flex justify-between items-center border-b border-gray-400 pb-4 mb-4">
+          <Link href={'/settings'}>
           <div className="flex gap-2 items-center">
             <Image
-              src="/icons/profile-active.jpg"
+              src=  {profileImage ||  "/icons/profile-active.jpg"}
               width={35}
               height={35}
               alt="Logo"
-              className="w-[35px] h-[35px] rounded-full cursor-pointer"
+              className="w-[35px] h-[35px] rounded-full cursor-pointer object-cover"
             />
             <div className="text-start">
               <p className="font-semibold text-sm">John Doe</p>
               <span className="text-xs text-gray-300">Vendor</span>
             </div>
           </div>
+          </Link>
           <SideProfilePopUp />
         </div>
 
