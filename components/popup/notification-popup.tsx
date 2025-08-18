@@ -58,7 +58,9 @@ const NotificationPopUp = () => {
         ))}
       </div>
       <div className="px-4 py-2 cursor-pointer text-center text-sm text-gray-700">
+        <Link href={'/notifications'}>
         See all notifications
+        </Link>
       </div>
     </div>
   );

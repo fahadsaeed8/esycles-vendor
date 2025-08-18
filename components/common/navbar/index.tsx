@@ -84,7 +84,7 @@ export default function Navbar() {
         {/* Left Section - Mobile Search Button */}
         <div className="flex items-center gap-2">
           <Link href={'/'}>
-          <h3 className=" cursor-pointer text-base lg:text-lg font-medium text-white">
+          <h3 className="pl-7 lg:pl-0 cursor-pointer text-base lg:text-lg font-medium text-white">
             Dashboard
           </h3>
           </Link>

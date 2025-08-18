@@ -48,9 +48,9 @@ const ProfilePopUp = () => {
           </Link>
         ))}
       </div>
-      <div className="px-4 py-2 cursor-pointer text-center text-sm text-gray-700">
+      {/* <div className="px-4 py-2 cursor-pointer text-center text-sm text-gray-700">
         Advanced Settings
-      </div>
+      </div> */}
     </div>
   );
 
