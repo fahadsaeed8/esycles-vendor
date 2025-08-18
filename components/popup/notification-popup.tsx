@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { Bell, Calendar, Link, Settings } from "lucide-react";
+import { Bell, Calendar, Link as LinkIcon, Settings } from "lucide-react";
 import ReactPopUp from "../common/react-popup";
+import Link from "next/link";
 
 const NotificationPopUp = () => {
   const notifications = [
@@ -11,18 +12,21 @@ const NotificationPopUp = () => {
       message: "Event today",
       description: " Just a reminder that you have an event today ",
       avatar: <Calendar size={16} className="text-white" />,
+      link: "/todo-list",
     },
     {
       id: 2,
       message: "Setting",
       description: " Update Dashboard",
       avatar: <Settings size={16} className="text-white" />,
+      link: "/settings",
     },
     {
       id: 3,
       message: "Launch Admin",
       description: "  New admin wow! ",
-      avatar: <Link size={16} className="text-white" />,
+      avatar: <LinkIcon size={16} className="text-white" />,
+      link: "/",
     },
   ];
 
@@ -33,9 +37,10 @@ const NotificationPopUp = () => {
       </div>
       <div>
         {notifications.map((msg) => (
-          <div
-            onClick={close}
+          <Link
             key={msg.id}
+            href={msg.link}
+            onClick={close}
             className={`flex items-center gap-3 px-4 py-2 transition-colors duration-150 cursor-pointer border-b border-b-gray-300 hover:bg-gray-300`}
           >
             <div className="min-w-10 max-w-10 min-h-10 max-h-10 bg-gray-600 rounded-full flex justify-center items-center">
@@ -49,7 +54,7 @@ const NotificationPopUp = () => {
                 {msg.description}
               </span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
       <div className="px-4 py-2 cursor-pointer text-center text-sm text-gray-700">
