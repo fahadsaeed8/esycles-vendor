@@ -28,9 +28,12 @@ export default function Leaderboard() {
     <DashboardLayout>
       <div>
         {/* Heading */}
-        <h1 className="text-3xl font-bold text-orange-600 mb-8 flex items-center gap-2">
-          🏆 Vendor Leaderboard
+        <div className="flex items-center gap-2 mb-8">
+        <span className=" text-3xl">🏆</span>
+        <h1 className="text-3xl font-bold  bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] bg-clip-text text-transparent flex items-center gap-2">
+           Vendor Leaderboard
         </h1>
+        </div>
 
         {/* Top 3 Vendors */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -39,7 +42,7 @@ export default function Leaderboard() {
               key={vendor.id}
               className={`rounded-xl p-6 text-center shadow-lg transition-transform hover:scale-105 ${
                 index === 0
-                  ? "bg-gradient-to-b from-orange-400 to-orange-600 text-white"
+                  ? "bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white"
                   : "bg-white border border-orange-200"
               }`}
             >
@@ -73,7 +76,7 @@ export default function Leaderboard() {
         {/* Remaining Vendors List */}
         <div className="bg-white rounded-xl shadow overflow-hidden">
           <table className="w-full">
-            <thead className="bg-orange-500 text-white">
+            <thead className="bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white">
               <tr>
                 <th className="py-3 px-4 text-left">Rank</th>
                 <th className="py-3 px-4 text-left">Vendor</th>

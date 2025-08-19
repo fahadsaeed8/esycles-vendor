@@ -8,27 +8,86 @@ import "react-phone-input-2/lib/style.css";
 import { Camera } from "lucide-react";
 import DashboardLayout from "../../components/layout/dashboard-layout";
 import { useUser } from "../../components/profileContext/profile-content";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export default function VendorSettings() {
-  // Form state
   const [notificationsEmail, setNotificationsEmail] = useState(true);
   const [notificationsSMS, setNotificationsSMS] = useState(false);
   const [notificationsPush, setNotificationsPush] = useState(true);
-  const [phone, setPhone] = useState("");
-    const { profileImage, setProfileImage } = useUser();
+  const { profileImage, setProfileImage } = useUser();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  
-
-    const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => setProfileImage(reader.result as string); // ✅ update global
+      reader.onload = () => setProfileImage(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
+
+  // ✅ Formik setup
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
+      email: "",
+      phone: "",
+      storeName: "",
+      currency: "USD",
+      storeCategory: "",
+      storeDescription: "",
+      businessName: "",
+      taxId: "",
+      businessAddress: "",
+      bankName: "",
+      accountNumber: "",
+      preferredPaymentMethod: "Bank Transfer",
+      defaultShippingRate: "",
+      freeShippingOver: "",
+      shippingZones: "",
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+    validationSchema: Yup.object({
+      fullName: Yup.string().required("Full Name is required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      phone: Yup.string().required("Phone is required"),
+      storeName: Yup.string().required("Store Name is required"),
+      storeCategory: Yup.string().required("Store Category is required"),
+      storeDescription: Yup.string().required("Store Description is required"),
+      businessName: Yup.string().required("Business Name is required"),
+      taxId: Yup.string().required("Tax ID is required"),
+      businessAddress: Yup.string().required("Business Address is required"),
+      bankName: Yup.string().required("Bank Name is required"),
+      accountNumber: Yup.string().required("Account Number is required"),
+      defaultShippingRate: Yup.number()
+        .typeError("Must be a number")
+        .required("Required"),
+      freeShippingOver: Yup.number()
+        .typeError("Must be a number")
+        .required("Required"),
+      shippingZones: Yup.string().required("Shipping Zones are required"),
+      currentPassword: Yup.string().required("Current Password is required"),
+      newPassword: Yup.string()
+        .min(6, "Must be at least 6 characters")
+        .required("New Password is required"),
+      confirmPassword: Yup.string()
+        .oneOf([Yup.ref("newPassword")], "Passwords must match")
+        .required("Confirm Password is required"),
+    }),
+    onSubmit: (values) => {
+      console.log("Form Values:", {
+        ...values,
+        notificationsEmail,
+        notificationsSMS,
+        notificationsPush,
+        profileImage,
+      });
+    },
+  });
 
   return (
     <DashboardLayout>
@@ -48,28 +107,25 @@ export default function VendorSettings() {
           </div>
 
           {/* Form */}
-          <form className=" p-4 md:p-6 space-y-8">
-            {/* Profile Picture Upload (centered) */}
+          <form
+            className=" p-4 md:p-6 space-y-8"
+            onSubmit={formik.handleSubmit}
+          >
+            {/* Profile Picture */}
             <div className="flex flex-col items-center justify-start">
               <div className="relative">
-                {/* Profile Preview */}
                 <img
-                  src={
-                    profileImage ||
-                    "/icons/profile-avatar.jpg"
-                  }
+                  src={profileImage || "/icons/profile-avatar.jpg"}
                   alt="Profile Preview"
                   className="h-28 w-28 rounded-full object-cover border border-gray-300 shadow"
                 />
-                {/* Camera Button */}
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="absolute bottom-1 right-1 bg-orange-500 p-2 rounded-full text-white shadow hover:bg-orange-600 transition"
                 >
-                  <Camera size={16} className=" cursor-pointer"/>
+                  <Camera size={16} className=" cursor-pointer" />
                 </button>
-                {/* Hidden File Input */}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -89,35 +145,38 @@ export default function VendorSettings() {
                 Profile Settings
               </h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <InputField label="Full Name" placeholder="John Doe" />
+                <InputField
+                  label="Full Name"
+                  name="fullName"
+                  placeholder="John Doe"
+                  formik={formik}
+                />
                 <InputField
                   label="Email Address"
+                  name="email"
                   type="email"
                   placeholder="vendor@esycles.com"
+                  formik={formik}
                 />
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Phone Number
                   </label>
-                  <motion.div
-                    whileFocus={{
-                      scale: 1.02,
-                      boxShadow: "0 0 0 4px rgba(249,115,22,0.2)",
-                    }}
-                    whileHover={{ scale: 1.01 }}
-                    className="mt-1"
-                  >
-                    <PhoneInput
-                      country={"pk"} // default Pakistan
-                      value={phone}
-                      onChange={(value) => setPhone(value)}
-                      enableSearch={true}
-                      containerClass="w-full"
-                      inputClass="!w-full !rounded-lg !border !border-gray-300 !px-3 !py-5 shadow-sm h-full !pl-12 !outline-none focus:!border-orange-500 focus:!ring focus:!ring-orange-300 transition-all duration-200"
-                      buttonClass="!border-none !bg-transparent !pl-3 !pr-1 !rounded-l-lg"
-                      dropdownClass="!bg-white !shadow-lg !border !border-gray-200"
-                    />
-                  </motion.div>
+                  <PhoneInput
+                    country={"pk"}
+                    value={formik.values.phone}
+                    onChange={(value) => formik.setFieldValue("phone", value)}
+                    enableSearch={true}
+                    containerClass="w-full"
+                    inputClass="!w-full !rounded-lg !border !border-gray-300 !px-3 !py-5 shadow-sm h-full !pl-12 !outline-none focus:!border-orange-500 focus:!ring focus:!ring-orange-300 transition-all duration-200"
+                    buttonClass="!border-none !bg-transparent !pl-3 !pr-1 !rounded-l-lg"
+                    dropdownClass="!bg-white !shadow-lg !border !border-gray-200"
+                  />
+                  {formik.touched.phone && formik.errors.phone && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {formik.errors.phone}
+                    </p>
+                  )}
                 </div>
               </div>
             </section>
@@ -128,15 +187,29 @@ export default function VendorSettings() {
                 Store Settings
               </h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <InputField label="Store Name" placeholder="Esycles Store" />
-                <SelectField label="Currency" options={["USD", "PKR", "EUR"]} />
+                <InputField
+                  label="Store Name"
+                  name="storeName"
+                  placeholder="Esycles Store"
+                  formik={formik}
+                />
+                <SelectField
+                  label="Currency"
+                  name="currency"
+                  options={["USD", "PKR", "EUR"]}
+                  formik={formik}
+                />
                 <InputField
                   label="Store Category"
+                  name="storeCategory"
                   placeholder="Bicycles & Accessories"
+                  formik={formik}
                 />
                 <TextAreaField
                   label="Store Description"
+                  name="storeDescription"
                   placeholder="Write a short description about your store..."
+                  formik={formik}
                 />
               </div>
             </section>
@@ -149,12 +222,21 @@ export default function VendorSettings() {
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 <InputField
                   label="Business Name"
+                  name="businessName"
                   placeholder="Esycles Pvt Ltd"
+                  formik={formik}
                 />
-                <InputField label="Tax ID" placeholder="123-456-789" />
+                <InputField
+                  label="Tax ID"
+                  name="taxId"
+                  placeholder="123-456-789"
+                  formik={formik}
+                />
                 <InputField
                   label="Business Address"
+                  name="businessAddress"
                   placeholder="123 Street, City, Country"
+                  formik={formik}
                 />
               </div>
             </section>
@@ -165,14 +247,23 @@ export default function VendorSettings() {
                 Payment Settings
               </h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <InputField label="Bank Name" placeholder="Habib Bank Ltd" />
+                <InputField
+                  label="Bank Name"
+                  name="bankName"
+                  placeholder="Habib Bank Ltd"
+                  formik={formik}
+                />
                 <InputField
                   label="Account Number"
+                  name="accountNumber"
                   placeholder="PK00-HBL-1234-5678"
+                  formik={formik}
                 />
                 <SelectField
                   label="Preferred Payment Method"
+                  name="preferredPaymentMethod"
                   options={["Bank Transfer", "Easypaisa", "JazzCash", "PayPal"]}
+                  formik={formik}
                 />
               </div>
             </section>
@@ -183,11 +274,23 @@ export default function VendorSettings() {
                 Shipping Settings
               </h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <InputField label="Default Shipping Rate" placeholder="5.00" />
-                <InputField label="Free Shipping Over" placeholder="50.00" />
+                <InputField
+                  label="Default Shipping Rate"
+                  name="defaultShippingRate"
+                  placeholder="5.00"
+                  formik={formik}
+                />
+                <InputField
+                  label="Free Shipping Over"
+                  name="freeShippingOver"
+                  placeholder="50.00"
+                  formik={formik}
+                />
                 <InputField
                   label="Shipping Zones"
+                  name="shippingZones"
                   placeholder="Domestic, International"
+                  formik={formik}
                 />
               </div>
             </section>
@@ -214,24 +317,30 @@ export default function VendorSettings() {
               />
             </section>
 
-            {/* Security Settings */}
+            {/* Security */}
             <section>
               <h2 className="text-lg font-semibold text-gray-800">Security</h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 <InputField
                   label="Current Password"
+                  name="currentPassword"
                   type="password"
                   placeholder="••••••••"
+                  formik={formik}
                 />
                 <InputField
                   label="New Password"
+                  name="newPassword"
                   type="password"
                   placeholder="••••••••"
+                  formik={formik}
                 />
                 <InputField
                   label="Confirm Password"
+                  name="confirmPassword"
                   type="password"
                   placeholder="••••••••"
+                  formik={formik}
                 />
               </div>
             </section>
@@ -243,10 +352,6 @@ export default function VendorSettings() {
                 whileTap={{ scale: 0.97 }}
                 className="px-6 py-2 cursor-pointer bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white rounded-lg shadow hover:bg-orange-600 transition"
                 type="submit"
-                onClick={(e) => {
-                  e.preventDefault();
-                  console.log("Save Changes clicked!");
-                }}
               >
                 Save Changes
               </motion.button>
@@ -261,17 +366,25 @@ export default function VendorSettings() {
 /* ======== REUSABLE COMPONENTS ======== */
 function InputField({
   label,
+  name,
   type = "text",
   placeholder,
+  formik,
 }: {
   label: string;
+  name: string;
   type?: string;
   placeholder?: string;
+  formik: any;
 }) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <motion.input
+        name={name}
+        value={formik.values[name]}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
         whileFocus={{
           scale: 1.02,
           boxShadow: "0 0 0 4px rgba(249,115,22,0.2)",
@@ -281,15 +394,32 @@ function InputField({
         placeholder={placeholder}
         className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none focus:border-orange-500 focus:ring focus:ring-orange-300 transition-all duration-200"
       />
+      {formik.touched[name] && formik.errors[name] && (
+        <p className="text-xs text-red-500 mt-1">{formik.errors[name]}</p>
+      )}
     </div>
   );
 }
 
-function SelectField({ label, options }: { label: string; options: string[] }) {
+function SelectField({
+  label,
+  name,
+  options,
+  formik,
+}: {
+  label: string;
+  name: string;
+  options: string[];
+  formik: any;
+}) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <motion.select
+        name={name}
+        value={formik.values[name]}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
         whileFocus={{
           scale: 1.02,
           boxShadow: "0 0 0 4px rgba(249,115,22,0.2)",
@@ -298,24 +428,37 @@ function SelectField({ label, options }: { label: string; options: string[] }) {
         className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none focus:border-orange-500 focus:ring focus:ring-orange-300 transition-all duration-200"
       >
         {options.map((opt) => (
-          <option key={opt}>{opt}</option>
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
         ))}
       </motion.select>
+      {formik.touched[name] && formik.errors[name] && (
+        <p className="text-xs text-red-500 mt-1">{formik.errors[name]}</p>
+      )}
     </div>
   );
 }
 
 function TextAreaField({
   label,
+  name,
   placeholder,
+  formik,
 }: {
   label: string;
+  name: string;
   placeholder?: string;
+  formik: any;
 }) {
   return (
     <div className="sm:col-span-2">
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <motion.textarea
+        name={name}
+        value={formik.values[name]}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
         whileFocus={{
           scale: 1.02,
           boxShadow: "0 0 0 4px rgba(249,115,22,0.2)",
@@ -325,6 +468,9 @@ function TextAreaField({
         rows={3}
         className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none focus:border-orange-500 focus:ring focus:ring-orange-300 transition-all duration-200"
       />
+      {formik.touched[name] && formik.errors[name] && (
+        <p className="text-xs text-red-500 mt-1">{formik.errors[name]}</p>
+      )}
     </div>
   );
 }
