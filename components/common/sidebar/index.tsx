@@ -19,6 +19,8 @@ import {
 import Image from "next/image";
 import SideProfilePopUp from "../../popup/side-profile-popup";
 import { useUser } from "../../profileContext/profile-content";
+import { useQuery } from "@tanstack/react-query";
+import { getProfileAPI } from "../../../services/api";
 
 interface MenuItem {
   label: string;
@@ -75,6 +77,11 @@ export default function Sidebar() {
   const [openDropdowns, setOpenDropdowns] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: getProfileAPI,
+  });
 
   const isActive = (link?: string) => {
     if (!link) return false;
@@ -191,7 +198,7 @@ export default function Sidebar() {
     }
   }, [pathname]);
 
-  const {profileImage} = useUser()
+  const { profileImage } = useUser();
   return (
     <>
       {/* Mobile Menu Button */}
@@ -229,32 +236,43 @@ export default function Sidebar() {
         </div>
 
         {/* Logo */}
-        <Link href={'/'}>
-        <Image
-          src={"/icons/white-logo-latest.png"}
-          width={120}
-          height={60}
-          alt="Logo"
-          className="w-fit h-fit cursor-pointer mb-2 !mx-auto"
-        />
+        <Link href={"/"}>
+          <Image
+            src={"/icons/white-logo-latest.png"}
+            width={120}
+            height={60}
+            alt="Logo"
+            className="w-fit h-fit cursor-pointer mb-2 !mx-auto"
+          />
         </Link>
 
         {/* User Profile */}
         <div className="w-full flex justify-between items-center border-b border-gray-400 pb-4 mb-4">
-          <Link href={'/settings'}>
-          <div className="flex gap-2 items-center">
-            <Image
-              src=  {profileImage ||  "/icons/profile-active.jpg"}
-              width={35}
-              height={35}
-              alt="Logo"
-              className="w-[35px] h-[35px] rounded-full cursor-pointer object-cover"
-            />
-            <div className="text-start">
-              <p className="font-semibold text-sm">John Doe</p>
-              <span className="text-xs text-gray-300">Vendor</span>
+          <Link href={"/settings"}>
+            <div className="flex gap-2 items-center">
+              {data?.user?.image ? (
+                <Image
+                  src={`${data?.user?.image && data?.user?.image}`}
+                  width={35}
+                  height={35}
+                  alt="Logo"
+                  className="w-[35px] h-[35px] rounded-full cursor-pointer object-cover"
+                />
+              ) : (
+                <div className="w-[45px] h-[45px] flex justify-center items-center rounded-full bg-blue-500 text-center font-semibold uppercase text-white">
+                  {data?.user?.first_name[0]}
+                </div>
+              )}
+
+              <div className="text-start">
+                <p className="font-semibold text-sm">
+                  {data?.user?.first_name} {data?.user?.last_name}
+                </p>
+                <span className="text-xs text-gray-300">
+                  {data?.user?.role}
+                </span>
+              </div>
             </div>
-          </div>
           </Link>
           <SideProfilePopUp />
         </div>

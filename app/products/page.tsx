@@ -1,117 +1,163 @@
-import { div } from "framer-motion/client";
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import DashboardLayout from "../../components/layout/dashboard-layout";
 import Button from "../../components/common/button";
+import AddProductModal from "../../components/common/modals/add-product-modal";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getAllProductsAPI, deleteProductsAPI } from "../../services/api";
+import { Edit, Trash2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 function AllProducts() {
-  const products = [
-    {
-      id: 1,
-      productImage: "/icons/cycle.png",
-      category: "Bicycles",
-      status: "Active",
-      sales: 120,
-      stock: 30,
-      sku: "BIC-001",
-      price: 299.99,
+  const [openAddProductModal, setOpenAddProductModal] = useState(false);
+
+  const {
+    data: allProducts,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["getAllProducts"],
+    queryFn: getAllProductsAPI,
+  });
+
+  // ✅ Delete mutation
+  const { mutate: deleteProduct, isPending: isDeleting } = useMutation({
+    mutationFn: (id: string) => deleteProductsAPI(id),
+    onSuccess: () => {
+      toast.success("Product deleted successfully");
+      refetch();
     },
-    {
-      id: 2,
-      productImage: "/icons/cycle.png",
-      category: "E-Scooters",
-      status: "Inactive",
-      sales: 85,
-      stock: 12,
-      sku: "SCO-045",
-      price: 499.0,
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Failed to delete product");
     },
-    {
-      id: 3,
-      productImage: "/icons/cycle.png",
-      category: "Accessories",
-      status: "Active",
-      sales: 230,
-      stock: 150,
-      sku: "ACC-123",
-      price: 19.95,
-    },
-    {
-      id: 4,
-      productImage: "/icons/cycle.png",
-      category: "Apparel",
-      status: "Active",
-      sales: 60,
-      stock: 80,
-      sku: "APP-337",
-      price: 39.99,
-    },
-    {
-      id: 5,
-      productImage: "/icons/cycle.png",
-      category: "E-Bikes",
-      status: "Pending",
-      sales: 0,
-      stock: 10,
-      sku: "EBK-778",
-      price: 1099.0,
-    },
-  ];
+  });
 
   return (
     <DashboardLayout>
       <div className="">
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-[24px] font-[500] text-[#1f1c2e] ">All Products</h1>
-          <Button variant="primary">Add Product</Button>
+          <h1 className="text-[24px] font-[500] text-[#1f1c2e] ">
+            All Products
+          </h1>
+          <Button
+            onClick={() => setOpenAddProductModal(true)}
+            variant="primary"
+          >
+            Add Product
+          </Button>
         </div>
-        <div className=" overflow-auto rounded-lg border border-gray-200">
-          <table className="text-sm text-left text-[#222]  min-w-[768px] w-full">
-            <thead className="bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white">
-              <tr>
-                <th className="py-4 pl-3 text-center text-[14px] ">#</th>
-                <th className="py-4 text-center text-[14px] ">Product Image</th>
-                <th className="py-4 text-center text-[14px] ">Category</th>
-                <th className="py-4 text-center text-[14px] ">Status</th>
-                <th className="py-4 text-center text-[14px] ">Sales</th>
-                <th className="py-4 text-center text-[14px] ">Stock</th>
-                <th className="py-4 text-center text-[14px] ">Sku</th>
-                <th className="py-4 text-center text-[14px] ">Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((order, idx) => (
-                <tr
-                  key={idx}
-                  className="border-t border-gray-200 bg-white hover:bg-orange-50 transition duration-300"
-                >
-                  <td className=" text-center text-[14px] py-3">{order.id}</td>
-                  <td className=" text-center text-[14px] py-3 w-fit">
-                    <img
-                      src={order.productImage}
-                      alt=""
-                      className=" h-[50px] text-center w-full object-contain"
-                    />
-                  </td>
-                  <td className=" text-center text-[14px] py-3">
-                    {order.category}
-                  </td>
-                  <td className=" text-center text-[14px] py-3">
-                    {order.status}
-                  </td>
-                  <td className=" text-center text-[14px] py-3">
-                    {order.sales}
-                  </td>
-                  <td className=" text-center text-[14px] py-3">
-                    {order.stock}
-                  </td>
-                  <td className=" text-center text-[14px] py-3">{order.sku}</td>
-                  <td className=" text-center text-[14px]">{order.price}</td>
+
+        {/* Table */}
+        <div className="overflow-auto rounded-lg border border-gray-200">
+          {isLoading ? (
+            <div className="py-6 text-center text-gray-500 text-[15px]">
+              Loading products...
+            </div>
+          ) : isError ? (
+            <div className="py-6 text-center text-red-500 text-[15px]">
+              Failed to load products.{" "}
+              <button
+                onClick={() => refetch()}
+                className="underline text-blue-600"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : !allProducts?.data || allProducts?.data?.length === 0 ? (
+            <div className="py-6 text-center text-gray-500 text-[15px]">
+              No products found
+            </div>
+          ) : (
+            <table className="text-sm text-left text-[#222] min-w-[768px] w-full">
+              <thead className="bg-gradient-to-r from-[#f8a649] via-[#f59e0b] to-[#d97706] text-white">
+                <tr>
+                  <th className="py-4 pl-3 text-center text-[14px]">#</th>
+                  <th className="py-4 text-center text-[14px]">
+                    Product Image
+                  </th>
+                  <th className="py-4 text-center text-[14px]">Category</th>
+                  <th className="py-4 text-center text-[14px]">Brand</th>
+                  <th className="py-4 text-center text-[14px]">Color</th>
+                  <th className="py-4 text-center text-[14px]">Stock</th>
+                  <th className="py-4 text-center text-[14px]">Sku</th>
+                  <th className="py-4 text-center text-[14px]">Price</th>
+                  <th className="py-4 text-center text-[14px]">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {allProducts?.data?.map((order: any, idx: number) => (
+                  <tr
+                    key={idx}
+                    className="border-t border-gray-200 bg-white hover:bg-orange-50 transition duration-300"
+                  >
+                    <td className="text-center text-[14px] py-3">{idx + 1}</td>
+                    <td className="text-center text-[14px] py-3 w-fit">
+                      {order?.images?.length > 0 ? (
+                        <img
+                          src={order.images[0]}
+                          alt=""
+                          className="h-[50px] text-center w-full object-contain"
+                        />
+                      ) : (
+                        <img
+                          src={`/images/not-avaiable.jpg`}
+                          alt="Not available"
+                          className="h-[50px] text-center w-full object-contain"
+                        />
+                      )}
+                    </td>
+                    <td className="text-center text-[14px] py-3">
+                      {order?.type || "-"}
+                    </td>
+                    <td className="text-center text-[14px] py-3">
+                      {order?.brand?.name || "-"}
+                    </td>
+                    <td className="text-center text-[14px] py-3">
+                      {order?.color?.name || "-"}
+                    </td>
+                    <td className="text-center text-[14px] py-3">
+                      {order?.stock ?? "-"}
+                    </td>
+                    <td className="text-center text-[14px] py-3">
+                      {order?.sku || "-"}
+                    </td>
+                    <td className="text-center text-[14px]">
+                      {order?.price ?? "-"}
+                    </td>
+
+                    {/* Actions Column */}
+                    <td className="text-center text-[14px] py-3 flex items-center justify-center gap-3">
+                      <button
+                        title="Edit"
+                        onClick={() => console.log("Edit", order)}
+                        className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                      >
+                        <Edit size={18} />
+                      </button>
+                      <button
+                        title="Delete"
+                        disabled={isDeleting}
+                        onClick={() => deleteProduct(order?._id)}
+                        className="text-red-600 hover:text-red-800 cursor-pointer disabled:opacity-50"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
+
+      {/* Add Product Modal */}
+      <AddProductModal
+        openAddProductModal={openAddProductModal}
+        setOpenAddProductModal={setOpenAddProductModal}
+      />
     </DashboardLayout>
   );
 }

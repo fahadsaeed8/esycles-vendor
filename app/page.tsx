@@ -7,108 +7,108 @@ import { FaBoxOpen, FaClipboardCheck } from "react-icons/fa";
 import { MdOutlineViewModule } from "react-icons/md";
 import Table from "../components/common/table/page";
 import Image from "next/image";
+import { useVendorProtected } from "../services/hooks/useVendorProtected";
 
-const page = () => {
-  const stats = [
-    {
-      icon: (
-        <FaBoxOpen className="text-green-500 text-5xl drop-shadow-2xl drop-shadow-green-500" />
-      ),
-      value: 165,
-      label: "All Product",
-    },
-    {
-      icon: (
-        <MdOutlineViewModule className="text-indigo-500 text-5xl drop-shadow-2xl drop-shadow-blue-500" />
-      ),
-      value: 15,
-      label: "Sales Product",
-    },
-    {
-      icon: (
-        <FaClipboardCheck className="text-cyan-500 text-5xl drop-shadow-2xl drop-shadow-blue-500" />
-      ),
-      value: 16,
-      label: "New Order",
-    },
-  ];
+const stats = [
+  {
+    icon: (
+      <FaBoxOpen className="text-green-500 text-5xl drop-shadow-2xl drop-shadow-green-500" />
+    ),
+    value: 165,
+    label: "All Product",
+  },
+  {
+    icon: (
+      <MdOutlineViewModule className="text-indigo-500 text-5xl drop-shadow-2xl drop-shadow-blue-500" />
+    ),
+    value: 15,
+    label: "Sales Product",
+  },
+  {
+    icon: (
+      <FaClipboardCheck className="text-cyan-500 text-5xl drop-shadow-2xl drop-shadow-blue-500" />
+    ),
+    value: 16,
+    label: "New Order",
+  },
+];
 
-  type Product = {
-    product: string;
-    category: string;
-    amount: number;
-    date: string;
-    customer: string;
-    status: string;
-  };
+type Product = {
+  product: string;
+  category: string;
+  amount: number;
+  date: string;
+  customer: string;
+  status: string;
+};
 
-  const products: Product[] = [
-    {
-      product: "Body Parts",
-      category: "Body Parts",
-      amount: 900,
-      date: "15/03/2022",
-      customer: "Nur Alom",
-      status: "Processing",
-    },
-    {
-      product: "Auxillary Battery",
-      category: "Body Parts",
-      amount: 16600,
-      date: "21/03/2022",
-      customer: "S A Sams",
-      status: "Shipped",
-    },
-    {
-      product: "Car Interior",
-      category: "Body Parts",
-      amount: 800,
-      date: "05/03/2022",
-      customer: "Sadek Rahman",
-      status: "Done",
-    },
-  ];
+const products: Product[] = [
+  {
+    product: "Body Parts",
+    category: "Body Parts",
+    amount: 900,
+    date: "15/03/2022",
+    customer: "Nur Alom",
+    status: "Processing",
+  },
+  {
+    product: "Auxillary Battery",
+    category: "Body Parts",
+    amount: 16600,
+    date: "21/03/2022",
+    customer: "S A Sams",
+    status: "Shipped",
+  },
+  {
+    product: "Car Interior",
+    category: "Body Parts",
+    amount: 800,
+    date: "05/03/2022",
+    customer: "Sadek Rahman",
+    status: "Done",
+  },
+];
 
-  const columns: { key: keyof Product; label: string }[] = [
-    { key: "product", label: "Product" },
-    { key: "category", label: "Category" },
-    { key: "amount", label: "Amount" },
-    { key: "date", label: "Date" },
-    { key: "customer", label: "Customer" },
-    { key: "status", label: "Status" },
-  ];
+const columns: { key: keyof Product; label: string }[] = [
+  { key: "product", label: "Product" },
+  { key: "category", label: "Category" },
+  { key: "amount", label: "Amount" },
+  { key: "date", label: "Date" },
+  { key: "customer", label: "Customer" },
+  { key: "status", label: "Status" },
+];
 
-  const categories = [
-    {
-      name: "Bicycles",
-      count: 1308,
-      bg: "bg-blue-100",
-      text: "text-sky-500",
-      icon: "/icons/cycle.png",
-    },
-    {
-      name: "E-bikes",
-      count: 1019,
-      bg: "bg-red-100",
-      text: "text-yellow-500",
-      icon: "/icons/cycle.png",
-    },
-    {
-      name: "E-scooters",
-      count: 807,
-      bg: "bg-green-100",
-      text: "text-green-500",
-      icon: "/icons/cycle.png",
-    },
-    {
-      name: "E-stakeboards",
-      count: 633,
-      bg: "bg-pink-100",
-      text: "text-pink-500",
-      icon: "/icons/cycle.png",
-    },
-  ];
-
+const categories = [
+  {
+    name: "Bicycles",
+    count: 1308,
+    bg: "bg-blue-100",
+    text: "text-sky-500",
+    icon: "/icons/cycle.png",
+  },
+  {
+    name: "E-bikes",
+    count: 1019,
+    bg: "bg-red-100",
+    text: "text-yellow-500",
+    icon: "/icons/cycle.png",
+  },
+  {
+    name: "E-scooters",
+    count: 807,
+    bg: "bg-green-100",
+    text: "text-green-500",
+    icon: "/icons/cycle.png",
+  },
+  {
+    name: "E-stakeboards",
+    count: 633,
+    bg: "bg-pink-100",
+    text: "text-pink-500",
+    icon: "/icons/cycle.png",
+  },
+];
+const DashboardPage = () => {
   return (
     <DashboardLayout>
       {/* <div className="w-full flex flex-col md:flex-row sm:items-center sm:justify-between md:px-4 py-2">
@@ -231,4 +231,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default DashboardPage;
