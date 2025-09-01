@@ -1,7 +1,7 @@
 "use client";
 
 import { JSX, useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
@@ -15,12 +15,18 @@ import {
   Menu,
   X,
   ChevronDown,
+  Ship,
+  ShipIcon,
+  ShipWheel,
+  Truck,
 } from "lucide-react";
 import Image from "next/image";
 import SideProfilePopUp from "../../popup/side-profile-popup";
 import { useUser } from "../../profileContext/profile-content";
 import { useQuery } from "@tanstack/react-query";
 import { getProfileAPI } from "../../../services/api";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 interface MenuItem {
   label: string;
@@ -46,6 +52,11 @@ const menuItems: MenuItem[] = [
     link: "/orders",
   },
   {
+    label: "Shipping Methods",
+    icon: <Truck size={18} />,
+    link: "/shipping-methods",
+  },
+  {
     label: "Products",
     icon: <Package size={18} />,
     link: "/products",
@@ -68,7 +79,6 @@ const menuItems: MenuItem[] = [
   {
     label: "Sign out",
     icon: <X size={18} />,
-    link: "/logout",
   },
 ];
 
@@ -77,11 +87,18 @@ export default function Sidebar() {
   const [openDropdowns, setOpenDropdowns] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  const { data, isError, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["profile"],
     queryFn: getProfileAPI,
   });
+
+  const logout = () => {
+    Cookies.remove("token");
+    toast.success("Logout successfully");
+    router.push("/login");
+  };
 
   const isActive = (link?: string) => {
     if (!link) return false;
@@ -105,26 +122,41 @@ export default function Sidebar() {
     return items.map((item) => (
       <li key={item.label}>
         {!item.subItems ? (
-          <Link
-            href={item.link || "#"}
-            className={`flex items-center justify-between w-full px-4 py-2 rounded-md text-sm transition ${
-              isActive(item.link)
-                ? `${
-                    level === 0 ? "bg-[#febd69] text-black" : "text-[#febd69]"
-                  } active-menu-item`
-                : "hover:bg-white/10 text-gray-200"
-            }`}
-            onClick={() => {
-              if (window.innerWidth < 1024) {
-                setMobileMenuOpen(false);
-              }
-            }}
-          >
-            <div className="flex items-center gap-3">
+          item.label === "Sign out" ? (
+            // ✅ Direct logout button
+            <button
+              onClick={() => {
+                logout();
+                if (window.innerWidth < 1024) setMobileMenuOpen(false);
+              }}
+              className="flex cursor-pointer items-center gap-3 w-full px-4 py-2 rounded-md text-sm text-gray-200 hover:bg-white/10 transition"
+            >
               {item.icon}
               <span>{item.label}</span>
-            </div>
-          </Link>
+            </button>
+          ) : (
+            // ✅ Normal menu items
+            <Link
+              href={item.link || "#"}
+              className={`flex items-center justify-between w-full px-4 py-2 rounded-md text-sm transition ${
+                isActive(item.link)
+                  ? `${
+                      level === 0 ? "bg-[#febd69] text-black" : "text-[#febd69]"
+                    } active-menu-item`
+                  : "hover:bg-white/10 text-gray-200"
+              }`}
+              onClick={() => {
+                if (window.innerWidth < 1024) {
+                  setMobileMenuOpen(false);
+                }
+              }}
+            >
+              <div className="flex items-center gap-3">
+                {item.icon}
+                <span>{item.label}</span>
+              </div>
+            </Link>
+          )
         ) : (
           <div>
             <button
@@ -168,7 +200,6 @@ export default function Sidebar() {
 
   useEffect(() => {
     const openParents: string[] = [];
-
     const checkSubItems = (items: MenuItem[], parentLabel?: string) => {
       for (const item of items) {
         if (item.subItems) {
@@ -181,7 +212,6 @@ export default function Sidebar() {
         }
       }
     };
-
     checkSubItems(menuItems);
     setOpenDropdowns(openParents);
   }, [pathname]);
@@ -252,7 +282,7 @@ export default function Sidebar() {
             <div className="flex gap-2 items-center">
               {data?.user?.image ? (
                 <Image
-                  src={`${data?.user?.image && data?.user?.image}`}
+                  src={`${data?.user?.image}`}
                   width={35}
                   height={35}
                   alt="Logo"
@@ -260,10 +290,9 @@ export default function Sidebar() {
                 />
               ) : (
                 <div className="w-[45px] h-[45px] flex justify-center items-center rounded-full bg-blue-500 text-center font-semibold uppercase text-white">
-                  {data?.user?.first_name[0]}
+                  {data?.user?.first_name?.[0]}
                 </div>
               )}
-
               <div className="text-start">
                 <p className="font-semibold text-sm">
                   {data?.user?.first_name} {data?.user?.last_name}

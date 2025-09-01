@@ -1,24 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  addProductAPI,
   getAllBrandsAPI,
   getAllColorsAPI,
   getAllModelsAPI,
   getAllProductsAPI,
-  getAllShippingMethodAPI,
+  updateProductAPI,
 } from "../../../services/api";
 import { toast } from "react-toastify";
 import ReactModal from "../react-modal";
 import { Cross, X, Upload, Info } from "lucide-react";
 
-interface AddProductModalProps {
-  openAddProductModal: boolean;
-  setOpenAddProductModal: (item: boolean) => void;
+interface EditProductModalProps {
+  openEditProductModal: boolean;
+  setOpenEditProductModal: (item: boolean) => void;
+  productId: string;
+  productData: any;
 }
 
 interface Option {
@@ -26,16 +27,14 @@ interface Option {
   name: string;
 }
 
-const AddProductModal = ({
-  openAddProductModal,
-  setOpenAddProductModal,
-}: AddProductModalProps) => {
+const EditProductModal = ({
+  openEditProductModal,
+  setOpenEditProductModal,
+  productId,
+  productData,
+}: EditProductModalProps) => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-
-  const { data: shippingMethod, isLoading } = useQuery({
-    queryKey: ["shippingMethods"],
-    queryFn: getAllShippingMethodAPI,
-  });
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const { data, refetch } = useQuery({
     queryKey: ["getAllProducts"],
@@ -62,28 +61,77 @@ const AddProductModal = ({
   const models: Option[] = modelsResponse?.data || [];
   const colors: Option[] = colorsResponse?.data || [];
 
-  const mutation = useMutation({
-    mutationFn: (data: FormData) => addProductAPI(data),
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: (data: any) => updateProductAPI(productId && productId, data),
     onSuccess: (res) => {
-      console.log("add product response", res);
-      toast.success("Product added successfully");
+      console.log("update product response", res);
+      toast.success("Product updated successfully");
       refetch();
-      setOpenAddProductModal(false);
-      formik.resetForm();
+      setOpenEditProductModal(false);
       setImagePreviews([]);
+      setUploadedImages([]);
     },
     onError: (err: any) => {
       const errorMsg =
-        err.response?.data?.message || "Error while adding product";
+        err.response?.data?.message || "Error while updating product";
       toast.error(errorMsg);
-      console.log("add product error", err);
+      console.log("update product error", err);
     },
   });
+
+  console.log("productData", productData);
+
+  // Prefill form when productData changes
+  useEffect(() => {
+    if (productData) {
+      // Set form values from productData
+      formik.setValues({
+        title: productData.title || "",
+        model: productData.model?._id || "",
+        brand: productData.brand?._id || "",
+        seller: productData.seller || "",
+        price: productData.price?.toString() || "",
+        old_price: productData.old_price?.toString() || "",
+        stock: productData.stock?.toString() || "",
+        type: productData.type || "",
+        foldable: productData.foldable?.toString() || "",
+        wattage: productData.wattage?.toString() || "",
+        model_code: productData.model_code || "",
+        sku: productData.sku || "",
+        sku_code: productData.sku_code || "",
+        color: productData.color?._id || "",
+        images: productData.images || [],
+        shipping: productData.shipping || "",
+        return_policy: productData.return_policy?.toString() || "",
+        customization_options:
+          productData.customization_options?.join(", ") || "",
+        MOQ: productData.MOQ?.toString() || "",
+        installmentMonth: productData.installmentMonth?.toString() || "",
+        shipping_method: productData?.shippingMethods,
+      });
+
+      // Set image previews if images exist
+      if (productData.images && productData.images.length > 0) {
+        // For demo purposes, we're just showing placeholder text
+        // In a real app, you would need to fetch these images from your server
+        setImagePreviews(
+          productData.images.map(
+            (img: string) =>
+              `https://placehold.co/200x200/EEE/31343C?text=${encodeURIComponent(
+                img
+              )}`
+          )
+        );
+      }
+    }
+  }, [productData]);
 
   // Validation Schema
   const validationSchema = Yup.object({
     title: Yup.string().required("Product title is required"),
     model: Yup.string().required("Please select a model"),
+    shipping_method: Yup.string().required("Please select a model"),
     brand: Yup.string().required("Please select a brand"),
     seller: Yup.string().required("Seller name is required"),
     price: Yup.number()
@@ -100,7 +148,6 @@ const AddProductModal = ({
       .min(0, "Stock cannot be negative")
       .required("Stock is required"),
     type: Yup.string().required("Please select a product type"),
-    shipping_method: Yup.string().required("Please select a product type"),
     foldable: Yup.boolean().typeError("Foldable must be true or false"),
     wattage: Yup.number()
       .typeError("Wattage must be a number")
@@ -110,16 +157,7 @@ const AddProductModal = ({
     sku: Yup.string().optional(),
     sku_code: Yup.string().optional(),
     color: Yup.string().required("Please select a color"),
-    images: Yup.mixed()
-      .test("fileCount", "At least one image is required", (value) => {
-        return value && value.length > 0;
-      })
-      .test("fileType", "Unsupported file format", (value) => {
-        if (!value || value.length === 0) return true;
-        return Array.from(value).every((file: any) =>
-          ["image/jpeg", "image/png", "image/gif"].includes(file.type)
-        );
-      }),
+    images: Yup.array().min(1, "At least one image is required"),
     shipping: Yup.string().optional(),
     return_policy: Yup.boolean().typeError(
       "Return policy must be true or false"
@@ -154,68 +192,37 @@ const AddProductModal = ({
       sku: "",
       sku_code: "",
       color: "",
-      images: [] as File[],
+      images: [] as string[],
       shipping: "",
       return_policy: "",
-      shipping_method: "",
       customization_options: "",
       MOQ: "",
       installmentMonth: "",
+      shipping_method: "",
     },
     validationSchema,
     onSubmit: (values) => {
-      // Create FormData object instead of JSON
-      const formData = new FormData();
+      // Convert string values to proper types before submission
+      const submissionData = {
+        ...values,
+        price: Number(values.price),
+        old_price: values.old_price ? Number(values.old_price) : undefined,
+        shipping: values.shipping_method,
+        stock: Number(values.stock),
+        foldable: values.foldable === "true",
+        wattage: values.wattage ? Number(values.wattage) : undefined,
+        return_policy: values.return_policy === "true",
+        customization_options: values.customization_options
+          ? values.customization_options.split(",").map((item) => item.trim())
+          : [],
+        MOQ: Number(values.MOQ),
+        installmentMonth: values.installmentMonth
+          ? Number(values.installmentMonth)
+          : undefined,
+      };
 
-      // Append all fields to formData (except images)
-      Object.keys(values).forEach((key) => {
-        if (key !== "images") {
-          formData.append(key, values[key as keyof typeof values] as string);
-        }
-      });
-
-      // Append image files separately
-      values.images.forEach((file: File) => {
-        formData.append("images", file);
-      });
-
-      // Convert numeric values to numbers
-      formData.set("price", String(Number(values.price)));
-      formData.set("stock", String(Number(values.stock)));
-      formData.set("MOQ", String(Number(values.MOQ)));
-      formData.set("shipping", values.shipping_method);
-
-      if (values.old_price) {
-        formData.set("old_price", String(Number(values.old_price)));
-      }
-
-      if (values.wattage) {
-        formData.set("wattage", String(Number(values.wattage)));
-      }
-
-      if (values.installmentMonth) {
-        formData.set(
-          "installmentMonth",
-          String(Number(values.installmentMonth))
-        );
-      }
-
-      // Boolean fields
-      formData.set("foldable", values.foldable === "true" ? "true" : "false");
-      formData.set(
-        "return_policy",
-        values.return_policy === "true" ? "true" : "false"
-      );
-      formData.set("is_active", "true");
-
-      console.log("📦 Form Data:");
-      // Log form data for debugging
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ": ", pair[1]);
-      }
-
-      // Make sure your API function accepts FormData
-      mutation.mutate(formData);
+      console.log("📦 Form Values:", submissionData);
+      updateMutation.mutate(submissionData);
     },
   });
 
@@ -230,8 +237,11 @@ const AddProductModal = ({
     const previews = newFiles.map((file) => URL.createObjectURL(file));
     setImagePreviews([...imagePreviews, ...previews]);
 
-    // Update formik values with the actual File objects
-    formik.setFieldValue("images", [...formik.values.images, ...newFiles]);
+    // Extract just the filenames
+    const fileNames = newFiles.map((file) => file.name);
+
+    // Update formik values with the array of filenames
+    formik.setFieldValue("images", [...formik.values.images, ...fileNames]);
   };
 
   const removeImage = (index: number) => {
@@ -256,14 +266,14 @@ const AddProductModal = ({
 
   return (
     <ReactModal
-      modalIsOpen={openAddProductModal}
-      setIsOpen={setOpenAddProductModal}
+      modalIsOpen={openEditProductModal}
+      setIsOpen={setOpenEditProductModal}
     >
       <div className="w-full min-w-[660px] p-5 max-w-[800px] max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Edit Product</h2>
           <button
-            onClick={() => setOpenAddProductModal(false)}
+            onClick={() => setOpenEditProductModal(false)}
             className="text-gray-500 hover:text-gray-700"
           >
             <X size={24} />
@@ -490,7 +500,7 @@ const AddProductModal = ({
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Customization options"
+              placeholder="Comma separated options"
             />
           </div>
 
@@ -638,7 +648,7 @@ const AddProductModal = ({
             >
               <option value="">Select Option</option>
 
-              {shippingMethod?.shippingMethods?.map((item, index) => {
+              {productData?.shippingMethods?.map((item, index) => {
                 return (
                   <option key={index} value={item?._id}>
                     {item?.name} {item?.description}
@@ -685,7 +695,7 @@ const AddProductModal = ({
 
             {formik.touched.images && formik.errors.images && (
               <span className="text-red-500 text-xs mt-1">
-                {formik.errors.images as string}
+                {formik.errors.images}
               </span>
             )}
 
@@ -707,7 +717,7 @@ const AddProductModal = ({
                       <button
                         type="button"
                         onClick={() => removeImage(idx)}
-                        className="absolute cursor-pointer top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -722,17 +732,19 @@ const AddProductModal = ({
           <div className="col-span-2 flex justify-end mt-6 pt-4 border-t border-gray-200">
             <button
               type="button"
-              onClick={() => setOpenAddProductModal(false)}
+              onClick={() => setOpenEditProductModal(false)}
               className="mr-3 px-4 py-2 border cursor-pointer border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={mutation.isLoading}
+              disabled={updateMutation.isLoading}
               className="bg-yellow-600 text-black cursor-pointer font-medium px-5 py-2 rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {mutation.isLoading ? "Adding Product..." : "Add Product"}
+              {updateMutation.isLoading
+                ? "Updating Product..."
+                : "Update Product"}
             </button>
           </div>
         </form>
@@ -741,4 +753,4 @@ const AddProductModal = ({
   );
 };
 
-export default AddProductModal;
+export default EditProductModal;

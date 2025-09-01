@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState } from "react";
 import {
   FiBell,
@@ -14,9 +13,11 @@ import {
   FiX,
 } from "react-icons/fi";
 import DashboardLayout from "../../components/layout/dashboard-layout";
+import { useQuery } from "@tanstack/react-query";
+import { getNotificationAPI } from "../../services/api";
 
 interface Notification {
-  id: number;
+  id: string; // API _id
   title: string;
   message: string;
   time: string;
@@ -25,62 +26,47 @@ interface Notification {
 }
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      title: "Order Shipped",
-      message: "Your bicycle order #4521 has been shipped.",
-      time: "2 hours ago",
-      category: "Orders",
-      read: false,
-    },
-    {
-      id: 2,
-      title: "New Message",
-      message: "You have a new message from Seller John.",
-      time: "Yesterday",
-      category: "Messages",
-      read: false,
-    },
-    {
-      id: 3,
-      title: "Special Offer",
-      message: "Get 15% off on mountain bikes this week!",
-      time: "2 days ago",
-      category: "Offers",
-      read: true,
-    },
-    {
-      id: 4,
-      title: "Payment Received",
-      message: "You received $250 from your last sale.",
-      time: "3 days ago",
-      category: "System",
-      read: true,
-    },
-  ]);
+  // ✅ Fetch notifications from API
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: getNotificationAPI,
+  });
+
+  // ✅ Map API response into UI shape
+  const notifications: Notification[] =
+    data?.data?.map((item: any) => ({
+      id: item._id,
+      title: item.title, // ✅ API: title
+      message: item.description, // ✅ API: description
+      time: new Date(item.createdAt).toLocaleString(), // 🔴 API mein "time" nahi hai → createdAt use kiya
+      category: "System", // 🔴 API mein "category" nahi hai → static default rakha
+      read: item.is_read, // ✅ API: is_read
+    })) || [];
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
 
-  const markAsRead = (id: number) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+  const markAsRead = (id: string) => {
+    // frontend-only update
+    // 🔴 API mein "mark as read" endpoint missing hai → abhi sirf local state update karenge
+    setSelectedNotification((prev) =>
+      prev && prev.id === id ? { ...prev, read: true } : prev
     );
   };
 
-  const deleteNotification = (id: number) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  const deleteNotification = (id: string) => {
+    // frontend-only delete
+    // 🔴 API mein "delete notification" endpoint missing hai → abhi sirf local state handle
   };
 
   const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    // 🔴 API endpoint missing hai → abhi static
   };
 
   const deleteAll = () => {
-    setNotifications([]);
+    // 🔴 API endpoint missing hai → abhi static
   };
 
   const filteredNotifications = notifications.filter(
@@ -135,9 +121,11 @@ export default function Notifications() {
                 </button>
               ))}
             </div>
-            <div className="flex items-center bg-gray-100 rounded px-3 w-full md:w-1/3  transition-all duration-300 ease-in-out
+            <div
+              className="flex items-center bg-gray-100 rounded px-3 w-full md:w-1/3 transition-all duration-300 ease-in-out
                focus-within:shadow-[0_0_8px_rgba(0,0,0,0.1)] focus-within:shadow-green-700 
-               focus-within:border-[1px] focus-within:border-green-500 border-none focus-within:bg-white">
+               focus-within:border-[1px] focus-within:border-green-500 border-none focus-within:bg-white"
+            >
               <FiSearch className="text-gray-400 mr-2" />
               <input
                 type="text"
@@ -151,7 +139,15 @@ export default function Notifications() {
 
           {/* Notifications List */}
           <div className="overflow-x-auto">
-            {filteredNotifications.length === 0 ? (
+            {isLoading ? (
+              <p className="text-center text-gray-500 py-6 text-sm sm:text-base">
+                Loading notifications...
+              </p>
+            ) : isError ? (
+              <p className="text-center text-red-500 py-6 text-sm sm:text-base">
+                Failed to load notifications
+              </p>
+            ) : filteredNotifications.length === 0 ? (
               <p className="text-center text-gray-500 py-6 text-sm sm:text-base">
                 No notifications found
               </p>
@@ -190,7 +186,7 @@ export default function Notifications() {
                     </div>
                     <div
                       className="flex flex-wrap gap-2"
-                      onClick={(e) => e.stopPropagation()} // Prevent modal opening when clicking buttons
+                      onClick={(e) => e.stopPropagation()}
                     >
                       {!n.read && (
                         <button
@@ -217,44 +213,45 @@ export default function Notifications() {
 
       {/* Modal for Notification Details */}
       {selectedNotification && (
-  <div
-    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-    onClick={() => setSelectedNotification(null)} // close on outside click
-  >
-    <div
-      className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"
-      onClick={(e) => e.stopPropagation()} // prevent closing on inside click
-    >
-      <button
-        onClick={() => setSelectedNotification(null)}
-        className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 cursor-pointer"
-      >
-        <FiX size={20} />
-      </button>
-      <div className="flex items-center gap-2 mb-3">
-        {selectedNotification.category === "Orders" && (
-          <FiPackage className="text-[#f59e0b] text-xl" />
-        )}
-        {selectedNotification.category === "Messages" && (
-          <FiMessageSquare className="text-[#f59e0b] text-xl" />
-        )}
-        {selectedNotification.category === "Offers" && (
-          <FiTag className="text-[#f59e0b] text-xl" />
-        )}
-        {selectedNotification.category === "System" && (
-          <FiAlertCircle className="text-[#f59e0b] text-xl" />
-        )}
-        <h2 className="text-lg font-bold">{selectedNotification.title}</h2>
-      </div>
-      <p className="text-gray-600 mb-4">{selectedNotification.message}</p>
-      <div className="text-sm text-gray-500">
-        <p>Category: {selectedNotification.category}</p>
-        <p>Time: {selectedNotification.time}</p>
-      </div>
-    </div>
-  </div>
-)}
-
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedNotification(null)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedNotification(null)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+            >
+              <FiX size={20} />
+            </button>
+            <div className="flex items-center gap-2 mb-3">
+              {selectedNotification.category === "Orders" && (
+                <FiPackage className="text-[#f59e0b] text-xl" />
+              )}
+              {selectedNotification.category === "Messages" && (
+                <FiMessageSquare className="text-[#f59e0b] text-xl" />
+              )}
+              {selectedNotification.category === "Offers" && (
+                <FiTag className="text-[#f59e0b] text-xl" />
+              )}
+              {selectedNotification.category === "System" && (
+                <FiAlertCircle className="text-[#f59e0b] text-xl" />
+              )}
+              <h2 className="text-lg font-bold">
+                {selectedNotification.title}
+              </h2>
+            </div>
+            <p className="text-gray-600 mb-4">{selectedNotification.message}</p>
+            <div className="text-sm text-gray-500">
+              <p>Category: {selectedNotification.category}</p>
+              <p>Time: {selectedNotification.time}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

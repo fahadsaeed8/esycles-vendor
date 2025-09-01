@@ -8,8 +8,8 @@ export const getProfileAPI = async () => {
 export const addProductAPI = (data) =>
   handleAPIRequest(axiosInstance.post, "api/products", data);
 
-export const updateProductAPI = (data) =>
-  handleAPIRequest(axiosInstance.patch, "api/products", data);
+export const updateProductAPI = (id, data) =>
+  handleAPIRequest(axiosInstance.patch, `api/products/${id}`, data);
 
 export const getAllProductsAPI = () =>
   handleAPIRequest(axiosInstance.get, "api/my-products");
@@ -25,3 +25,24 @@ export const getAllModelsAPI = () =>
 
 export const getAllColorsAPI = () =>
   handleAPIRequest(axiosInstance.get, "api/colors");
+
+export const getVendorOrders = () =>
+  handleAPIRequest(axiosInstance.get, "api/vendor/orders");
+
+export const createShippingMethodAPI = (data) =>
+  handleAPIRequest(axiosInstance.post, "api/shipping", data);
+
+export const getAllShippingMethodAPI = () =>
+  handleAPIRequest(axiosInstance.get, "api/all_shippings");
+
+export const getSingleShippingMethodAPI = (id) =>
+  handleAPIRequest(axiosInstance.get, `api/shipping/${id}`);
+
+export const updateShippingMethodAPI = (id, data) =>
+  handleAPIRequest(axiosInstance.patch, `api/shipping/${id}`, data);
+
+export const deleteShippingMethodAPI = (id) =>
+  handleAPIRequest(axiosInstance.delete, `api/shipping/${id}`);
+
+export const getNotificationAPI = () =>
+  handleAPIRequest(axiosInstance.get, `api/notifications`);

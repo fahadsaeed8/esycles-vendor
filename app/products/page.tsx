@@ -7,9 +7,14 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { getAllProductsAPI, deleteProductsAPI } from "../../services/api";
 import { Edit, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
+import EditProductModal from "../../components/common/modals/edit-porduct-modal";
 
 function AllProducts() {
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
+  const [openEditProductModal, setOpenEditProductModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  console.log("selectedProduct", selectedProduct);
 
   const {
     data: allProducts,
@@ -32,6 +37,11 @@ function AllProducts() {
       toast.error(error?.response?.data?.message || "Failed to delete product");
     },
   });
+
+  const handleEditModal = (item) => {
+    setSelectedProduct(item);
+    setOpenEditProductModal(true);
+  };
 
   return (
     <DashboardLayout>
@@ -131,7 +141,7 @@ function AllProducts() {
                     <td className="text-center text-[14px] py-3 flex items-center justify-center gap-3">
                       <button
                         title="Edit"
-                        onClick={() => console.log("Edit", order)}
+                        onClick={() => handleEditModal(order)}
                         className="text-blue-600 hover:text-blue-800 cursor-pointer"
                       >
                         <Edit size={18} />
@@ -157,6 +167,12 @@ function AllProducts() {
       <AddProductModal
         openAddProductModal={openAddProductModal}
         setOpenAddProductModal={setOpenAddProductModal}
+      />
+      <EditProductModal
+        openEditProductModal={openEditProductModal}
+        setOpenEditProductModal={setOpenEditProductModal}
+        productId={selectedProduct?._id}
+        productData={selectedProduct}
       />
     </DashboardLayout>
   );
