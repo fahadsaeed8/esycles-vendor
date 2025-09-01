@@ -6,7 +6,7 @@ import { updateShippingMethodAPI } from "../../../services/api";
 import { toast } from "react-toastify";
 
 type ShippingMethodValues = {
-  _id?: string;
+  _id?: string | number; // <-- dono allow kar diye
   name: string;
   description: string;
   cost: number;
@@ -59,9 +59,10 @@ export const EditShippingMethodModal = ({
 
     try {
       await updateMutation.mutateAsync({
-        id: editRow._id,
+        id: String(editRow._id), // <-- Ensure it's always a string
         values,
       });
+
       toast.success("Shipping method updated successfully");
       resetForm(); // Form reset karein
     } catch (error) {

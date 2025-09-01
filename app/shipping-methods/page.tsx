@@ -17,7 +17,15 @@ import DashboardLayout from "../../components/layout/dashboard-layout";
 import Button from "../../components/common/button";
 
 type ShippingMethodRow = {
-  id: number;
+  _id: number;
+  name: string;
+  description: string;
+  cost: number;
+  estimated_days: number;
+};
+
+type ShippingMethodValues = {
+  _id?: string | number; // <-- dono allow kar diye
   name: string;
   description: string;
   cost: number;
@@ -149,7 +157,7 @@ export default function ShippingMethodsPage() {
                                   {/* 🗑 Delete */}
                                   <button
                                     onClick={() =>
-                                      deleteMutation.mutate(row._id)
+                                      deleteMutation.mutate(row?._id)
                                     }
                                     className="p-2 rounded-lg cursor-pointer bg-red-100 hover:bg-red-200"
                                   >
@@ -187,7 +195,7 @@ export default function ShippingMethodsPage() {
         <EditShippingMethodModal
           isOpen={showEditModal}
           onClose={() => setShowEditModal(false)}
-          editRow={editRow}
+          editRow={editRow as unknown as ShippingMethodValues} // force cast
         />
       </div>
     </DashboardLayout>

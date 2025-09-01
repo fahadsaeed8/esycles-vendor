@@ -739,10 +739,10 @@ const EditProductModal = ({
             </button>
             <button
               type="submit"
-              disabled={updateMutation.isLoading}
+              disabled={updateMutation.isPending}
               className="bg-yellow-600 text-black cursor-pointer font-medium px-5 py-2 rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {updateMutation.isLoading
+              {updateMutation.isPending
                 ? "Updating Product..."
                 : "Update Product"}
             </button>

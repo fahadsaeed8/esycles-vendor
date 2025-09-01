@@ -110,16 +110,19 @@ const AddProductModal = ({
     sku: Yup.string().optional(),
     sku_code: Yup.string().optional(),
     color: Yup.string().required("Please select a color"),
-    images: Yup.mixed()
+    images: Yup.mixed<File[]>()
       .test("fileCount", "At least one image is required", (value) => {
-        return value && value.length > 0;
+        const files = value as File[] | undefined;
+        return !!files && files.length > 0;
       })
       .test("fileType", "Unsupported file format", (value) => {
-        if (!value || value.length === 0) return true;
-        return Array.from(value).every((file: any) =>
+        const files = value as File[] | undefined;
+        if (!files || files.length === 0) return true;
+        return files.every((file) =>
           ["image/jpeg", "image/png", "image/gif"].includes(file.type)
         );
       }),
+
     shipping: Yup.string().optional(),
     return_policy: Yup.boolean().typeError(
       "Return policy must be true or false"
@@ -729,10 +732,10 @@ const AddProductModal = ({
             </button>
             <button
               type="submit"
-              disabled={mutation.isLoading}
+              disabled={mutation.isPending}
               className="bg-yellow-600 text-black cursor-pointer font-medium px-5 py-2 rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {mutation.isLoading ? "Adding Product..." : "Add Product"}
+              {mutation.isPending ? "Adding Product..." : "Add Product"}
             </button>
           </div>
         </form>

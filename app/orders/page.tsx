@@ -7,13 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getVendorOrders } from "../../services/api";
 
 function Orders() {
-  // ✅ React Query integration
   const { data, isLoading, isError } = useQuery({
     queryKey: ["vendorOrders"],
     queryFn: getVendorOrders,
   });
 
-  // API Response shape: { success, count, orders: [...] }
   const orders = data?.orders || [];
 
   return (
