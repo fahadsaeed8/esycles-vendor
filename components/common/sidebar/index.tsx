@@ -68,6 +68,71 @@ const menuItems: MenuItem[] = [
     icon: <X size={18} />,
     link: "/logout",
   },
+  {
+    label: "Product & Listing Management",
+    icon: <Package size={18} />,
+    link: "/product-listing",
+    subItems: [
+      {
+        label: "Classified Ads",
+        link: "/product-listing/classified-ads",
+      },
+      {
+        label: "RFQs",
+        link: "/product-listing/rfqs",
+      },
+      {
+        label: "Auctions",
+        link: "/product-listing/auctions",
+      },
+      {
+        label: "Product Upload",
+        link: "/product-listing/upload",
+      },
+      {
+        label: "Availability Control",
+        link: "/product-listing/availability",
+      },
+    ],
+  },
+  {
+    label: "Order & Transaction Control",
+    icon: <ShoppingCart size={18} />,
+    link: "/orders-transactions",
+    subItems: [
+      {
+        label: "Incoming Orders",
+        link: "/orders-transactions/incoming-orders",
+        subItems: [
+          {
+            label: "Buy It Now",
+            link: "/orders-transactions/incoming-orders/buy-it-now",
+          },
+          {
+            label: "Bulk Orders",
+            link: "/orders-transactions/incoming-orders/bulk-orders",
+          },
+          { label: "RFQs", link: "/orders-transactions/incoming-orders/rfqs" },
+        ],
+      },
+      {
+        label: "Payments & Invoices",
+        link: "/orders-transactions/payments-invoices",
+      },
+      {
+        label: "Settlement Reports",
+        link: "/orders-transactions/settlement-reports",
+      },
+      {
+        label: "Delivery Timelines",
+        link: "/orders-transactions/delivery-timelines",
+      },
+      {
+        label: "Bulk Order Requests",
+        link: "/orders-transactions/bulk-order-requests",
+      },
+    ],
+  },
 ];
 
 export default function Sidebar() {
@@ -191,7 +256,7 @@ export default function Sidebar() {
     }
   }, [pathname]);
 
-  const {profileImage} = useUser()
+  const { profileImage } = useUser();
   return (
     <>
       {/* Mobile Menu Button */}
@@ -229,32 +294,32 @@ export default function Sidebar() {
         </div>
 
         {/* Logo */}
-        <Link href={'/'}>
-        <Image
-          src={"/icons/white-logo-latest.png"}
-          width={120}
-          height={60}
-          alt="Logo"
-          className="w-fit h-fit cursor-pointer mb-2 !mx-auto"
-        />
+        <Link href={"/"}>
+          <Image
+            src={"/icons/white-logo-latest.png"}
+            width={120}
+            height={60}
+            alt="Logo"
+            className="w-fit h-fit cursor-pointer mb-2 !mx-auto"
+          />
         </Link>
 
         {/* User Profile */}
         <div className="w-full flex justify-between items-center border-b border-gray-400 pb-4 mb-4">
-          <Link href={'/settings'}>
-          <div className="flex gap-2 items-center">
-            <Image
-              src=  {profileImage ||  "/icons/profile-active.jpg"}
-              width={35}
-              height={35}
-              alt="Logo"
-              className="w-[35px] h-[35px] rounded-full cursor-pointer object-cover"
-            />
-            <div className="text-start">
-              <p className="font-semibold text-sm">John Doe</p>
-              <span className="text-xs text-gray-300">Vendor</span>
+          <Link href={"/settings"}>
+            <div className="flex gap-2 items-center">
+              <Image
+                src={profileImage || "/icons/profile-active.jpg"}
+                width={35}
+                height={35}
+                alt="Logo"
+                className="w-[35px] h-[35px] rounded-full cursor-pointer object-cover"
+              />
+              <div className="text-start">
+                <p className="font-semibold text-sm">John Doe</p>
+                <span className="text-xs text-gray-300">Vendor</span>
+              </div>
             </div>
-          </div>
           </Link>
           <SideProfilePopUp />
         </div>
