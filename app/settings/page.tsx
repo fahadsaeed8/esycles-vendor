@@ -15,13 +15,11 @@ export default function VendorSettings() {
   const [notificationsSMS, setNotificationsSMS] = useState(false);
   const [notificationsPush, setNotificationsPush] = useState(true);
   const [phone, setPhone] = useState("");
-    const { profileImage, setProfileImage } = useUser();
+  const { profileImage, setProfileImage } = useUser();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  
-
-    const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -54,10 +52,7 @@ export default function VendorSettings() {
               <div className="relative">
                 {/* Profile Preview */}
                 <img
-                  src={
-                    profileImage ||
-                    "/icons/profile-avatar.jpg"
-                  }
+                  src={profileImage || "/site-icons/profile-avatar.jpg"}
                   alt="Profile Preview"
                   className="h-28 w-28 rounded-full object-cover border border-gray-300 shadow"
                 />
@@ -67,7 +62,7 @@ export default function VendorSettings() {
                   onClick={() => fileInputRef.current?.click()}
                   className="absolute bottom-1 right-1 bg-orange-500 p-2 rounded-full text-white shadow hover:bg-orange-600 transition"
                 >
-                  <Camera size={16} className=" cursor-pointer"/>
+                  <Camera size={16} className=" cursor-pointer" />
                 </button>
                 {/* Hidden File Input */}
                 <input

@@ -84,28 +84,28 @@ const categories = [
     count: 1308,
     bg: "bg-blue-100",
     text: "text-sky-500",
-    icon: "/icons/cycle.png",
+    icon: "/site-icons/cycle.png",
   },
   {
     name: "E-bikes",
     count: 1019,
     bg: "bg-red-100",
     text: "text-yellow-500",
-    icon: "/icons/cycle.png",
+    icon: "/site-icons/cycle.png",
   },
   {
     name: "E-scooters",
     count: 807,
     bg: "bg-green-100",
     text: "text-green-500",
-    icon: "/icons/cycle.png",
+    icon: "/site-icons/cycle.png",
   },
   {
     name: "E-stakeboards",
     count: 633,
     bg: "bg-pink-100",
     text: "text-pink-500",
-    icon: "/icons/cycle.png",
+    icon: "/site-icons/cycle.png",
   },
 ];
 const DashboardPage = () => {

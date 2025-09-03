@@ -6,6 +6,11 @@ import Button from "../../components/common/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getVendorOrders, updateOrderStatus } from "../../services/api";
 
+type UpdateStatusInput = {
+  id: string;
+  status: { order_status: string };
+};
+
 function Orders() {
   const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery({
@@ -15,7 +20,8 @@ function Orders() {
 
   // Mutation for updating order status
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }) => updateOrderStatus(id, status),
+    mutationFn: ({ id, status }: UpdateStatusInput) =>
+      updateOrderStatus(id, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vendorOrders"] });
     },
@@ -23,8 +29,7 @@ function Orders() {
 
   const orders = data?.orders || [];
 
-  // Handle status change
-  const handleStatusChange = (orderId, newStatus) => {
+  const handleStatusChange = (orderId: string, newStatus: string) => {
     updateStatusMutation.mutate({
       id: orderId,
       status: { order_status: newStatus },

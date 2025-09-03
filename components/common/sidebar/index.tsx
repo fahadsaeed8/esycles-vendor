@@ -268,7 +268,7 @@ export default function Sidebar() {
         {/* Logo */}
         <Link href={"/"}>
           <Image
-            src={"/icons/white-logo-latest.png"}
+            src={"/site-icons/white-logo-latest.png"}
             width={120}
             height={60}
             alt="Logo"

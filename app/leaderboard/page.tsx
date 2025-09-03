@@ -10,17 +10,22 @@ interface Vendor {
 }
 
 const vendors: Vendor[] = [
-  { id: 1, name: "Ali Traders", avatar: "/icons/cyclewhite.png", score: 980 },
+  {
+    id: 1,
+    name: "Ali Traders",
+    avatar: "/site-icons/cyclewhite.png",
+    score: 980,
+  },
   {
     id: 2,
     name: "Raza Electronics",
-    avatar: "/icons/cyclelogo2.png",
+    avatar: "/site-icons/cyclelogo2.png",
     score: 870,
   },
-  { id: 3, name: "Tech Hub", avatar: "/icons/cyclelogo2.png", score: 820 },
-  { id: 4, name: "City Mart", avatar: "/icons/cycle.png", score: 780 },
-  { id: 5, name: "Smart Deals", avatar: "/icons/cycle.png", score: 750 },
-  { id: 6, name: "MegaMart", avatar: "/icons/cycle.png", score: 720 },
+  { id: 3, name: "Tech Hub", avatar: "/site-icons/cyclelogo2.png", score: 820 },
+  { id: 4, name: "City Mart", avatar: "/site-icons/cycle.png", score: 780 },
+  { id: 5, name: "Smart Deals", avatar: "/site-icons/cycle.png", score: 750 },
+  { id: 6, name: "MegaMart", avatar: "/site-icons/cycle.png", score: 720 },
 ];
 
 export default function Leaderboard() {
