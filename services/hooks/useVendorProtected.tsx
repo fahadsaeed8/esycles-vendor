@@ -1,4 +1,3 @@
-// hooks/useVendorProtected.tsx
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -6,35 +5,40 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import VendorAccessModal from "../../components/common/modals/VendorAccessModal";
 import { getProfileAPI } from "../api";
+import { parseCookies } from "nookies";
 
 export const useVendorProtected = () => {
   const [showModal, setShowModal] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  console.log("token", token);
+
+  // client side pe hi token le
+  useEffect(() => {
+    const cookies = parseCookies();
+    setToken(cookies.token || null);
+  }, []);
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: getProfileAPI,
-    enabled: !!token, // sirf tab chale jab token ho
+    enabled: !!token,
     retry: false,
   });
 
-  console.log("getprofiledata", data);
-
   useEffect(() => {
     if (!token) {
-      setShowModal(true); // Token hi nahi → show modal
+      setShowModal(true);
       return;
     }
 
     if (isError) {
-      setShowModal(true); // API fail → show modal
+      setShowModal(true);
     }
 
     if (data && data.user?.role !== "vendor") {
-      setShowModal(true); // Not vendor → show modal
+      setShowModal(true);
     }
   }, [token, data, isError]);
 

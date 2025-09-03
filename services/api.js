@@ -1,9 +1,12 @@
 import { axiosInstance, handleAPIRequest } from "./axiosInstance";
 
-export const getProfileAPI = async () => {
-  const res = await axiosInstance.get("api/profile");
-  return res.data;
-};
+// export const getProfileAPI = async () => {
+//   const res = await axiosInstance.get("api/profile");
+//   return res.data;
+// };
+
+export const getProfileAPI = () =>
+  handleAPIRequest(axiosInstance.get, "api/profile");
 
 export const addProductAPI = (data) =>
   handleAPIRequest(axiosInstance.post, "api/products", data);
@@ -28,6 +31,9 @@ export const getAllColorsAPI = () =>
 
 export const getVendorOrders = () =>
   handleAPIRequest(axiosInstance.get, "api/vendor/orders");
+
+export const updateOrderStatus = (id, data) =>
+  handleAPIRequest(axiosInstance.patch, `api/order/${id}/status`, data);
 
 export const createShippingMethodAPI = (data) =>
   handleAPIRequest(axiosInstance.post, "api/shipping", data);

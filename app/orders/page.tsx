@@ -1,18 +1,35 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { FaEye, FaDownload, FaTrash } from "react-icons/fa";
 import DashboardLayout from "../../components/layout/dashboard-layout";
 import Button from "../../components/common/button";
-import { useQuery } from "@tanstack/react-query";
-import { getVendorOrders } from "../../services/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getVendorOrders, updateOrderStatus } from "../../services/api";
 
 function Orders() {
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["vendorOrders"],
     queryFn: getVendorOrders,
   });
 
+  // Mutation for updating order status
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }) => updateOrderStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["vendorOrders"] });
+    },
+  });
+
   const orders = data?.orders || [];
+
+  // Handle status change
+  const handleStatusChange = (orderId, newStatus) => {
+    updateStatusMutation.mutate({
+      id: orderId,
+      status: { order_status: newStatus },
+    });
+  };
 
   return (
     <DashboardLayout>
@@ -55,7 +72,7 @@ function Orders() {
                     Num. of Products
                   </th>
                   <th className="py-3 text-center text-[12px]">Customer</th>
-                  <th className="py-3 text-center text-[12px]">Seller</th>
+                  {/* <th className="py-3 text-center text-[12px]">Seller</th> */}
                   <th className="py-3 text-center text-[12px]">Amount</th>
                   <th className="py-3 text-center text-[12px]">
                     Delivery Status
@@ -83,7 +100,7 @@ function Orders() {
                       />
                     </td>
 
-                    {/* Order Code -> API doesn’t provide, so showing _id */}
+                    {/* Order Code -> API doesn't provide, so showing _id */}
                     <td className="flex flex-col items-center p-2 text-center w-full">
                       <span className="text-[12px] font-[400] text-center">
                         {order._id}
@@ -103,20 +120,32 @@ function Orders() {
                     </td>
 
                     {/* Seller Name */}
-                    <td className="p-2 text-center text-[12px]">
+                    {/* <td className="p-2 text-center text-[12px]">
                       {order.items?.[0]?.product?.seller?.company_info
                         ?.company_name || "Inhouse Order"}
-                      {/* 🔴 Ask backend: confirm seller field */}
-                    </td>
+                    </td> */}
 
                     {/* Amount */}
                     <td className="p-2 text-center text-[12px]">
                       ${order.total_price}
                     </td>
 
-                    {/* Delivery Status */}
+                    {/* Delivery Status with Dropdown */}
                     <td className="p-2 text-center text-[12px]">
-                      {order.order_status}
+                      <select
+                        value={order.order_status}
+                        onChange={(e) =>
+                          handleStatusChange(order._id, e.target.value)
+                        }
+                        className="text-xs border rounded p-1 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                        disabled={updateStatusMutation.isPending}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
                     </td>
 
                     {/* Payment Method -> not in API, keeping static */}
