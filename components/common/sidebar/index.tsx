@@ -100,7 +100,7 @@ export default function Sidebar() {
 
     toast.success("Logout successfully");
 
-    router.push("/");
+    window.location.href = "/";
   };
 
   const isActive = (link?: string) => {
