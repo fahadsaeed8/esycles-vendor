@@ -95,9 +95,12 @@ export default function Sidebar() {
   });
 
   const logout = () => {
+    Cookies.remove("token", { path: "/", domain: ".esycles.com" });
     Cookies.remove("token");
+
     toast.success("Logout successfully");
-    router.push("/login");
+
+    router.push("/");
   };
 
   const isActive = (link?: string) => {
