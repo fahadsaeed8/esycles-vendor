@@ -47,8 +47,8 @@ export const AddShippingMethodModal = ({ isOpen, onClose }: Props) => {
       await createMutation.mutateAsync(values);
       toast.success("Created Successfully ");
       resetForm(); // Form reset karein
-    } catch (error) {
-      toast.error("Something went wrong");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
       console.error("Error creating shipping method:", error);
     }
   };

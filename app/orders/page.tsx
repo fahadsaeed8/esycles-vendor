@@ -5,6 +5,7 @@ import DashboardLayout from "../../components/layout/dashboard-layout";
 import Button from "../../components/common/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getVendorOrders, updateOrderStatus } from "../../services/api";
+import SingleOrderDetailsModal from "../../components/common/modals/single-order-details-modal";
 
 type UpdateStatusInput = {
   id: string;
@@ -13,6 +14,8 @@ type UpdateStatusInput = {
 
 function Orders() {
   const queryClient = useQueryClient();
+  const [showSingleOrder, setShowSingleOrder] = useState(false);
+  const [order, setOrder] = useState(null);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["vendorOrders"],
     queryFn: getVendorOrders,
@@ -29,6 +32,8 @@ function Orders() {
 
   const orders = data?.orders || [];
 
+  console.log("orders", orders);
+
   const handleStatusChange = (orderId: string, newStatus: string) => {
     updateStatusMutation.mutate({
       id: orderId,
@@ -41,7 +46,7 @@ function Orders() {
       <div className="">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-[24px] font-[500] text-[#1f1c2e]">Orders</h1>
-          <Button variant="primary">Add Orders</Button>
+          {/* <Button variant="primary">Add Orders</Button> */}
         </div>
 
         <div className="overflow-auto border border-gray-300 rounded-lg">
@@ -88,7 +93,6 @@ function Orders() {
                   <th className="py-3 text-center text-[12px]">
                     Payment Status
                   </th>
-                  <th className="py-3 text-center text-[12px]">Refund</th>
                   <th className="py-3 text-center text-[12px]">Options</th>
                 </tr>
               </thead>
@@ -155,31 +159,37 @@ function Orders() {
 
                     {/* Payment Method -> not in API, keeping static */}
                     <td className="p-2 text-center text-[12px]">
-                      Cash On Delivery
-                      {/* 🔴 Ask backend: return payment method */}
+                      {order?.order_source === "shop_now"
+                        ? " Cash On Delivery"
+                        : "Card"}
                     </td>
 
                     {/* Payment Status */}
                     <td className="p-2 text-center text-[12px]">
                       <span
                         className={`px-2 py-1 text-white text-xs rounded ${
-                          order.payment_status === "paid"
-                            ? "bg-green-500"
-                            : "bg-red-500"
+                          order?.order_source === "shop_now"
+                            ? "bg-red-500"
+                            : "bg-green-500"
                         }`}
                       >
-                        {order.payment_status}
+                        {order?.order_source === "shop_now"
+                          ? "Pending"
+                          : "Paid"}
                       </span>
                     </td>
 
-                    {/* Refund -> not in API, keeping static */}
-                    <td className="p-1 text-center">No Refund</td>
-
                     {/* Options */}
                     <td className="p-1 flex gap-x-2 items-center justify-center text-center">
-                      <FaEye className="cursor-pointer text-gray-700" />
-                      <FaDownload className="cursor-pointer text-gray-700" />
-                      <FaTrash className="cursor-pointer text-gray-700" />
+                      <FaEye
+                        onClick={() => {
+                          setOrder(order);
+                          setShowSingleOrder(true);
+                        }}
+                        className="cursor-pointer text-gray-700"
+                      />
+                      {/* <FaDownload className="cursor-pointer text-gray-700" />
+                      <FaTrash className="cursor-pointer text-gray-700" /> */}
                     </td>
                   </tr>
                 ))}
@@ -188,6 +198,12 @@ function Orders() {
           )}
         </div>
       </div>
+
+      <SingleOrderDetailsModal
+        order={order}
+        showSingleOrder={showSingleOrder}
+        setShowSingleOrder={setShowSingleOrder}
+      />
     </DashboardLayout>
   );
 }
