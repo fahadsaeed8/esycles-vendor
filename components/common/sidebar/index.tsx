@@ -96,8 +96,8 @@ export default function Sidebar() {
 
   const logout = () => {
     Cookies.remove("token", { path: "/", domain: ".esycles.com" });
-    Cookies.remove("token");
 
+    Cookies.remove("persist:root", { path: "/", domain: ".esycles.com" });
     toast.success("Logout successfully");
 
     window.location.href = "/";
