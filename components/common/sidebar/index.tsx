@@ -15,6 +15,10 @@ import {
   Menu,
   X,
   ChevronDown,
+  MessageCircle,
+  BarChart4,
+  BadgeCheck,
+  ShieldCheck,
 } from "lucide-react";
 import Image from "next/image";
 import SideProfilePopUp from "../../popup/side-profile-popup";
@@ -69,7 +73,7 @@ const menuItems: MenuItem[] = [
     link: "/logout",
   },
   {
-    label: "Product & Listing Management",
+    label: "Product & Listing",
     icon: <Package size={18} />,
     link: "/product-listing",
     subItems: [
@@ -77,14 +81,14 @@ const menuItems: MenuItem[] = [
         label: "Classified Ads",
         link: "/product-listing/classified-ads",
       },
-      {
-        label: "RFQs",
-        link: "/product-listing/rfqs",
-      },
-      {
-        label: "Auctions",
-        link: "/product-listing/auctions",
-      },
+      // {
+      //   label: "RFQs",
+      //   link: "/product-listing/rfqs",
+      // },
+      // {
+      //   label: "Auctions",
+      //   link: "/product-listing/auctions",
+      // },
       {
         label: "Product Upload",
         link: "/product-listing/upload",
@@ -96,43 +100,152 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
-    label: "Order & Transaction Control",
+    label: "Order & Transaction",
     icon: <ShoppingCart size={18} />,
     link: "/orders-transactions",
     subItems: [
       {
         label: "Incoming Orders",
         link: "/orders-transactions/incoming-orders",
-        subItems: [
-          {
-            label: "Buy It Now",
-            link: "/orders-transactions/incoming-orders/buy-it-now",
-          },
-          {
-            label: "Bulk Orders",
-            link: "/orders-transactions/incoming-orders/bulk-orders",
-          },
-          { label: "RFQs", link: "/orders-transactions/incoming-orders/rfqs" },
-        ],
+        // subItems: [
+        //   {
+        //     label: "Buy It Now",
+        //     link: "/orders-transactions/incoming-orders/buy-it-now",
+        //   },
+        //   {
+        //     label: "Bulk Orders",
+        //     link: "/orders-transactions/incoming-orders/bulk-orders",
+        //   },
+        //   { label: "RFQs", link: "/orders-transactions/incoming-orders/rfqs" },
+        // ],
       },
       {
         label: "Payments & Invoices",
         link: "/orders-transactions/payments-invoices",
       },
-      {
-        label: "Settlement Reports",
-        link: "/orders-transactions/settlement-reports",
-      },
-      {
-        label: "Delivery Timelines",
-        link: "/orders-transactions/delivery-timelines",
-      },
+      // {
+      //   label: "Settlement Reports",
+      //   link: "/orders-transactions/settlement-reports",
+      // },
+      // {
+      //   label: "Delivery Timelines",
+      //   link: "/orders-transactions/delivery-timelines",
+      // },
       {
         label: "Bulk Order Requests",
         link: "/orders-transactions/bulk-order-requests",
       },
     ],
   },
+  {
+    label: "Communication",
+    icon: <MessageCircle size={18} />, // lucide-react icon
+    link: "/communication",
+    subItems: [
+      {
+        label: "Customer Inquiries",
+        link: "/communication/inquiries",
+      },
+      {
+        label: "RFQs & Bids",
+        link: "/communication/rfqs-bids",
+      },
+      {
+        label: "Negotiations",
+        link: "/communication/negotiations",
+      },
+      // {
+      //   label: "Change Orders",
+      //   link: "/communication/change-orders",
+      // },
+      {
+        label: "Messaging / Chat",
+        link: "/communication/chat",
+      },
+    ],
+  },
+  {
+    label: "Performance",
+    icon: <BarChart4 size={18} />, // lucide-react icon
+    link: "/analytics",
+    subItems: [
+      {
+        label: "Dashboard Insights",
+        link: "/analytics/dashboard",
+      },
+      {
+        label: "Auction Performance",
+        link: "/analytics/auctions",
+      },
+      // {
+      //   label: "Bidding Trends",
+      //   link: "/analytics/bidding-trends",
+      // },
+      // {
+      //   label: "Customer Engagement",
+      //   link: "/analytics/engagement",
+      // },
+      {
+        label: "Top-Selling Categories",
+        link: "/analytics/top-categories",
+      },
+      // {
+      //   label: "Demand Patterns",
+      //   link: "/analytics/demand-patterns",
+      // },
+    ],
+  },
+  {
+    label: "Brand & Profile",
+    icon: <BadgeCheck size={18} />, // lucide-react icon (you can swap with UserCircle2 if preferred)
+    link: "/brand-profile",
+    subItems: [
+      {
+        label: "Upload features",
+        link: "/brand-profile/upload-feature", // logo, banners, landing page
+      },
+      {
+        label: "Landing Page",
+        link: "/brand-profile/landing-page",
+      },
+      {
+        label: "Showcase",
+        link: "/brand-profile/showcase",
+      },
+      {
+        label: "Control Visibility",
+        link: "/brand-profile/control",
+      },
+    ],
+  },
+  {
+  label: "Policy & Dispute",
+  icon: <ShieldCheck size={18} />, // lucide-react (represents security & policies)
+  link: "/policy-dispute",
+  subItems: [
+    {
+      label: "Dispute Resolution",
+      link: "/policy-dispute/disputes", // tools for resolving conflicts
+    },
+    // {
+    //   label: "Support Tickets",
+    //   link: "/policy-dispute/support-tickets", // customer/vendor support tickets
+    // },
+    {
+      label: "Returns & Refunds",
+      link: "/policy-dispute/returns-refunds", // manage return/refund requests
+    },
+    // {
+    //   label: "Compliance & Policies",
+    //   link: "/policy-dispute/compliance", // marketplace rules & compliance
+    // },
+    {
+      label: "Transaction Records",
+      link: "/policy-dispute/transactions", // audit & appeal logs
+    },
+  ],
+}
+
 ];
 
 export default function Sidebar() {
