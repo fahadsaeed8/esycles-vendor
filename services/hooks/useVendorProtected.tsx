@@ -47,7 +47,9 @@ export const useVendorProtected = () => {
     isVendor: data?.user?.role === "vendor",
     AccessModal: showModal ? (
       <VendorAccessModal
-        onClose={() => window.location.replace("https://user.esycles.com/")}
+        onClose={() =>
+          window.location.replace("https://user.esycles.com/login")
+        }
       />
     ) : null,
   };
