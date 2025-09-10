@@ -19,12 +19,13 @@ import {
   ShipIcon,
   ShipWheel,
   Truck,
+  Repeat,
 } from "lucide-react";
 import Image from "next/image";
 import SideProfilePopUp from "../../popup/side-profile-popup";
 import { useUser } from "../../profileContext/profile-content";
 import { useQuery } from "@tanstack/react-query";
-import { getProfileAPI } from "../../../services/api";
+import { getProfileAPI, returnOrderAPI } from "../../../services/api";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
@@ -50,6 +51,11 @@ const menuItems: MenuItem[] = [
     label: "Orders",
     icon: <ShoppingCart size={18} />,
     link: "/orders",
+  },
+  {
+    label: "Return Orders",
+    icon: <Repeat size={18} />,
+    link: "/return-orders",
   },
   {
     label: "Shipping Methods",
@@ -88,6 +94,13 @@ export default function Sidebar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const { data: returnOrdersData } = useQuery({
+    queryKey: ["returnOrdersCount"],
+    queryFn: () => returnOrderAPI("requested"),
+  });
+
+  console.log("returnOrdersData", returnOrdersData?.returnOrders?.length);
 
   const { data } = useQuery({
     queryKey: ["profile"],
@@ -138,7 +151,6 @@ export default function Sidebar() {
               <span>{item.label}</span>
             </button>
           ) : (
-            // ✅ Normal menu items
             <Link
               href={item.link || "#"}
               className={`flex items-center justify-between w-full px-4 py-2 rounded-md text-sm transition ${
@@ -157,6 +169,13 @@ export default function Sidebar() {
               <div className="flex items-center gap-3">
                 {item.icon}
                 <span>{item.label}</span>
+
+                {item.label === "Return Orders" &&
+                  returnOrdersData?.returnOrders?.length > 0 && (
+                    <span className="ml-2 bg-red-500 text-white text-xs font-semibold min-w-5 min-h-5 flex justify-center items-center leading-normal rounded-full">
+                      {returnOrdersData?.returnOrders?.length}
+                    </span>
+                  )}
               </div>
             </Link>
           )
@@ -173,7 +192,15 @@ export default function Sidebar() {
               <div className="flex items-center gap-3">
                 {item.icon}
                 <span>{item.label}</span>
+
+                {item.label === "Return Orders" &&
+                  returnOrdersData?.returnOrders?.length > 0 && (
+                    <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                      {returnOrdersData?.returnOrders?.length}
+                    </span>
+                  )}
               </div>
+
               <ChevronDown
                 size={16}
                 className={`transition ${

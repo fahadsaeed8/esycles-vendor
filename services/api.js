@@ -35,6 +35,15 @@ export const getVendorOrders = () =>
 export const updateOrderStatus = (id, data) =>
   handleAPIRequest(axiosInstance.patch, `api/order/${id}/status`, data);
 
+export const returnOrderAPI = (status) =>
+  handleAPIRequest(
+    axiosInstance.get,
+    `api/vendor/return-orders/?status=${status}`
+  );
+
+export const updatereturnOrderStatusAPI = (data) =>
+  handleAPIRequest(axiosInstance.post, `api/vendor/return-orders/status`, data);
+
 export const createShippingMethodAPI = (data) =>
   handleAPIRequest(axiosInstance.post, "api/shipping", data);
 

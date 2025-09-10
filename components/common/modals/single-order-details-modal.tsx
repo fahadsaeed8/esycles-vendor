@@ -223,15 +223,15 @@ export default function SingleOrderDetailsModal({
               <h4 className="font-semibold text-orange-600 mb-2">
                 Shipping Method
               </h4>
-              <p className="font-medium">{order?.shipping_method.name}</p>
+              <p className="font-medium">{order?.shipping_method?.name}</p>
               <p className="text-sm text-gray-600">
-                {order?.shipping_method.description}
+                {order?.shipping_method?.description}
               </p>
               <p className="text-sm">
-                Estimated: {order?.shipping_method.estimated_days} days
+                Estimated: {order?.shipping_method?.estimated_days} days
               </p>
               <p className="font-semibold text-orange-600">
-                Cost: ${order?.shipping_method.cost}
+                Cost: ${order?.shipping_method?.cost}
               </p>
             </div>
 
