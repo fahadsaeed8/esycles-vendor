@@ -8,6 +8,7 @@ import { getAllProductsAPI, deleteProductsAPI } from "../../services/api";
 import { Edit, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import EditProductModal from "../../components/common/modals/edit-porduct-modal";
+import BulkOrderUploadModal from "../../components/common/modals/bulk-order-upload-modal";
 
 function AllProducts() {
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
@@ -51,12 +52,15 @@ function AllProducts() {
           <h1 className="text-[24px] font-[500] text-[#1f1c2e] ">
             All Products
           </h1>
-          <Button
-            onClick={() => setOpenAddProductModal(true)}
-            variant="primary"
-          >
-            Add Product
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => setOpenAddProductModal(true)}
+              variant="primary"
+            >
+              Add Product
+            </Button>
+            <BulkOrderUploadModal />
+          </div>
         </div>
 
         {/* Table */}

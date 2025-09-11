@@ -14,6 +14,9 @@ export const addProductAPI = (data) =>
 export const updateProductAPI = (id, data) =>
   handleAPIRequest(axiosInstance.patch, `api/products/${id}`, data);
 
+export const uploadBulkProductAPI = (data) =>
+  handleAPIRequest(axiosInstance.post, `api/products/bulk-upload`, data);
+
 export const getAllProductsAPI = () =>
   handleAPIRequest(axiosInstance.get, "api/my-products");
 
