@@ -48,11 +48,14 @@ const BulkUploadOrders = () => {
       queryClient.invalidateQueries({ queryKey: ["getAllProducts"] });
     },
     onError: (error: any) => {
+      console.log("file upload error", error);
       setProgress(0);
       setShowModal(false);
 
       toast.error(
-        error?.response?.data?.message || "Failed to upload orders ❌"
+        error?.response?.data?.error?.error?.message
+          ? error?.response?.data?.error?.error?.message
+          : error?.response?.data?.message || "Failed to upload orders ❌"
       );
     },
   });
@@ -76,7 +79,7 @@ const BulkUploadOrders = () => {
 
       <input
         type="file"
-        accept=".xlsx"
+        accept=".csv"
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
